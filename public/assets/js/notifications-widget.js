@@ -11,7 +11,7 @@
                     title: 'Alerte Stock',
                     message: 'Stock de Maïs faible à Ségou !',
                     time: 'Il y a 2h',
-                    link: 'stocks.html'
+                    link: '/manager/stocks'
                 },
                 {
                     type: 'info',
@@ -19,7 +19,7 @@
                     title: 'Nouvelle Visite',
                     message: 'Nouvelle visite enregistrée par Ouane.',
                     time: 'Il y a 5h',
-                    link: 'secure-portal.html'
+                    link: '/secure-portal'
                 }
             ];
             
