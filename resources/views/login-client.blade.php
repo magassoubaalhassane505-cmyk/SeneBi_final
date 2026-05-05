@@ -25,7 +25,7 @@
 
           <form id="loginForm" class="auth-form">
             <label for="email">Email</label>
-            <input id="email" type="email" value="sidi@sidi-agri.sn" placeholder="Ex: votre-email@entreprise.com" required />
+            <input id="email" type="email" value="sidi@sidi-agri.ml" placeholder="Ex: votre-email@entreprise.com" required />
 
             <label for="password">Mot de passe</label>
             <input id="password" type="password" value="client123" placeholder="Votre mot de passe" required />

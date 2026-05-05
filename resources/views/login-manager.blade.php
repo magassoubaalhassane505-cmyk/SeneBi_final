@@ -35,7 +35,7 @@
             @endif
             
             <label for="email">Email</label>
-            <input id="email" name="email" type="email" value="mimi.manager@senebi.sn" placeholder="Ex: adiaratou@sidi-agri.com" required />
+            <input id="email" name="email" type="email" value="mimi.manager@senebi.ml" placeholder="Ex: adiaratou@sidi-agri.com" required />
 
             <label for="password">Mot de passe</label>
             <input id="password" name="password" type="password" value="manager123" placeholder="Votre mot de passe" required />

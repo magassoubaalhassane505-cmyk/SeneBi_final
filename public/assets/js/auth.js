@@ -3,8 +3,8 @@
   const USERS_KEY = "senebi_auth_users";
 
   const defaultUsers = [
-    { id: "U-1", name: "Mimi", company: "SeneBI", email: "mimi.manager@senebi.sn", password: "manager123", role: "manager", blocked: false },
-    { id: "U-3", name: "Mimi", company: "Sidi Agri", email: "sidi@sidi-agri.sn", password: "client123", role: "client", blocked: false },
+    { id: "U-1", name: "Mimi", company: "SeneBI", email: "mimi.manager@senebi.ml", password: "manager123", role: "manager", blocked: false },
+    { id: "U-3", name: "Mimi", company: "Sidi Agri", email: "sidi@sidi-agri.ml", password: "client123", role: "client", blocked: false },
   ];
 
   function normalizeRole(role) {
