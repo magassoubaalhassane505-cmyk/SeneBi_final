@@ -49,7 +49,7 @@
       <!-- Partie Droite : Actions -->
       <div class="topbar-actions">
         <!-- Bouton "Retour au portail" -->
-        <a class="btn secondary" href="{{ route('secure.portal') }}">🔧 Retour au portail</a>
+        <a class="btn secondary" href="{{ route('secure.portal') }}">🔧Admin panel </a>
         
         <div class="auth-pills">
           <a class="pill user-pill" href="/manager/compte">Mimi</a>

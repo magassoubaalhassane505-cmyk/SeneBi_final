@@ -274,7 +274,6 @@
                 <h3 style="margin:0; font-size:16px;">Planifier une nouvelle visite</h3>
                 <div class="small muted">Ajouter une visite au planning</div>
               </div>
-              <span class="tag good">Nouveau</span>
             </div>
             
             <form class="visit-form visit-form-horizontal" id="visitForm">
@@ -314,13 +313,6 @@
                   </select>
                 </div>
 
-                <div class="form-group">
-                  <div style="display: flex; align-items: center; margin-top: 8px;">
-                    <input type="checkbox" id="includeDelivery" name="includeDelivery" style="margin-right: 8px;">
-                    <label for="includeDelivery" style="margin: 0; font-weight: normal; color: var(--text-muted);">Inclure une livraison d'intrants</label>
-                  </div>
-                </div>
-
                 <div class="form-group form-button-group">
                   <label>&​nbsp;</label>
                   <button type="submit" class="btn btn-primary btn-confirm">
@@ -333,48 +325,48 @@
         </section>
       </main>
       <script src="{{ asset('assets/js/layout.js') }}"></script>
-    <script src="{{ asset('assets/js/core.js') }}"></script>
-    <script src="{{ asset('assets/js/auth.js') }}"></script>
-    <script src="{{ asset('assets/js/visits-control.js') }}"></script>
-    
-    <!-- JavaScript pour la navigation active -->
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // Détecter la page active dans la navigation
-        const navLinks = document.querySelectorAll('.manager-nav a');
-        const currentPath = window.location.pathname;
+      <script src="{{ asset('assets/js/core.js') }}"></script>
+      <script src="{{ asset('assets/js/auth.js') }}"></script>
+      <script src="{{ asset('assets/js/visits-control.js') }}"></script>
+      
+      <!-- JavaScript pour la navigation active et notifications -->
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // Détecter la page active dans la navigation
+          const navLinks = document.querySelectorAll('.manager-nav a');
+          const currentPath = window.location.pathname;
 
-        navLinks.forEach(link => {
-          const linkPath = new URL(link.href, window.location.origin).pathname;
-          if (currentPath === linkPath) {
-            link.classList.add('active');
-          }
-        });
-        
-        // Gestion de la cloche de notification
-        const notificationBell = document.getElementById('notificationBell');
-        const notificationDropdown = document.getElementById('notificationDropdown');
-
-        if (notificationBell && notificationDropdown) {
-          // Au clic sur la cloche
-          notificationBell.addEventListener('click', function(e) {
-            e.stopPropagation();
-            notificationDropdown.classList.toggle('show');
-          });
-
-          // Fermeture au clic ailleurs
-          document.addEventListener('click', function(e) {
-            if (!notificationBell.contains(e.target) && !notificationDropdown.contains(e.target)) {
-              notificationDropdown.classList.remove('show');
+          navLinks.forEach(link => {
+            const linkPath = new URL(link.href, window.location.origin).pathname;
+            if (currentPath === linkPath) {
+              link.classList.add('active');
             }
           });
+          
+          // Gestion de la cloche de notification
+          const notificationBell = document.getElementById('notificationBell');
+          const notificationDropdown = document.getElementById('notificationDropdown');
 
-          // Fermeture au clic sur le dropdown lui-même
-          notificationDropdown.addEventListener('click', function(e) {
-            e.stopPropagation();
-          });
-        }
-      });
-    </script>
+          if (notificationBell && notificationDropdown) {
+            // Au clic sur la cloche
+            notificationBell.addEventListener('click', function(e) {
+              e.stopPropagation();
+              notificationDropdown.classList.toggle('show');
+            });
+
+            // Fermeture au clic ailleurs
+            document.addEventListener('click', function(e) {
+              if (!notificationBell.contains(e.target) && !notificationDropdown.contains(e.target)) {
+                notificationDropdown.classList.remove('show');
+              }
+            });
+
+            // Fermeture au clic sur le dropdown lui-même
+            notificationDropdown.addEventListener('click', function(e) {
+              e.stopPropagation();
+            });
+          }
+        });
+      </script>
   </body>
 </html>

@@ -25,5 +25,11 @@ class ManagementController extends Controller
     public function supervision() {
         return view('supervision');
     }
-}
 
+    // NOUVEAU : Affiche le compte manager (Fichier: compte.blade.php)
+    public function compte() {
+        return view('compte');
+    }
+
+    // Dans app/Http/Controllers/ManagementController.php
+}
