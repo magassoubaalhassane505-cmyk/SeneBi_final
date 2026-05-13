@@ -184,52 +184,6 @@
         color: #64748b;
       }
       
-      /* Actions Rapides */
-      .quick-actions-section {
-        margin-top: 24px;
-      }
-      
-      .quick-actions-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-        margin-top: 16px;
-      }
-      
-      .quick-action-btn {
-        background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 20px 16px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-decoration: none;
-      }
-      
-      .quick-action-btn:hover {
-        border-color: #10b981;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
-        transform: translateY(-2px);
-      }
-      
-      .action-icon {
-        font-size: 24px;
-        margin-bottom: 8px;
-      }
-      
-      .action-title {
-        font-weight: 600;
-        color: #1e293b;
-        margin-bottom: 4px;
-        font-size: 14px;
-      }
-      
-      .action-desc {
-        font-size: 12px;
-        color: #64748b;
-      }
-      
       /* Responsive */
       @media (max-width: 768px) {
         .stats-grid {
@@ -238,10 +192,6 @@
         
         .trends-grid {
           grid-template-columns: 1fr;
-        }
-        
-        .quick-actions-grid {
-          grid-template-columns: repeat(2, 1fr);
         }
       }
       
@@ -265,7 +215,6 @@
     <div class="app">
       
     @include('header-manager')
-
 
       <main class="container">
         <div class="page-title">
@@ -634,44 +583,6 @@
             </div>
           </article>
         </section>
-
-        <!-- Section Actions Rapides -->
-        <section class="quick-actions-section">
-          <article class="card">
-            <div class="card-header">
-              <div>
-                <h3 style="margin:0; font-size:16px;">⚡ Actions Rapides</h3>
-                <div class="small muted">Gestion rapide des opérations</div>
-              </div>
-              <span class="tag good">Tools</span>
-            </div>
-            <div class="quick-actions-grid">
-              <button class="quick-action-btn" onclick="window.location.href='{{ route('manager.supervision') }}'">
-                <div class="action-icon">👁️</div>
-                <div class="action-title">Supervision</div>
-                <div class="action-desc">Surveiller les opérations</div>
-              </button>
-              
-              <button class="quick-action-btn" onclick="window.location.href='{{ route('manager.visites') }}'">
-                <div class="action-icon">📅</div>
-                <div class="action-title">Planifier Visites</div>
-                <div class="action-desc">Gérer les rendez-vous</div>
-              </button>
-              
-              <button class="quick-action-btn" onclick="generateReport()">
-                <div class="action-icon">📄</div>
-                <div class="action-title">Générer Rapport</div>
-                <div class="action-desc">Export mensuel</div>
-              </button>
-              
-              <button class="quick-action-btn" onclick="showNotifications()">
-                <div class="action-icon">🔔</div>
-                <div class="action-title">Notifications</div>
-                <div class="action-desc">3 nouveaux messages</div>
-              </button>
-            </div>
-          </article>
-        </section>
       </main>
       <div data-layout="footer"></div>
     </div>
@@ -840,102 +751,6 @@
     
     <!-- Fonctions JavaScript pour les sections restaurées -->
     <script>
-      // Fonctions pour les actions rapides
-      function generateReport() {
-        console.log("📄 Génération du rapport mensuel...");
-        
-        // Créer une notification de succès
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-          position: fixed;
-          top: 20px;
-          right: 20px;
-          background: #10b981;
-          color: white;
-          padding: 16px 20px;
-          border-radius: 12px;
-          font-size: 14px;
-          font-weight: 600;
-          z-index: 1001;
-          opacity: 0;
-          transform: translateY(20px);
-          transition: all 0.3s ease;
-          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-        `;
-        notification.textContent = '📄 Rapport mensuel généré avec succès !';
-        
-        document.body.appendChild(notification);
-        
-        // Animation d'apparition
-        setTimeout(() => {
-          notification.style.opacity = '1';
-          notification.style.transform = 'translateY(0)';
-        }, 100);
-        
-        // Masquer après 3 secondes
-        setTimeout(() => {
-          notification.style.opacity = '0';
-          notification.style.transform = 'translateY(20px)';
-          setTimeout(() => {
-            document.body.removeChild(notification);
-          }, 300);
-        }, 3000);
-        
-        // Simulation de génération de rapport
-        setTimeout(() => {
-          console.log("✅ Rapport PDF prêt pour téléchargement");
-        }, 1500);
-      }
-      
-      function showNotifications() {
-        console.log("🔔 Affichage des notifications...");
-        
-        // Créer une modale simple pour les notifications
-        const modal = document.createElement('div');
-        modal.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0, 0, 0, 0.5);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1002;
-        `;
-        
-        modal.innerHTML = `
-          <div style="background: white; border-radius: 16px; padding: 24px; max-width: 400px; width: 90%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
-            <h3 style="margin: 0 0 16px 0; color: #1e293b; font-size: 18px;">🔔 Notifications</h3>
-            <div style="margin-bottom: 16px;">
-              <div style="padding: 12px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px;">
-                <div style="font-weight: 600; color: #1e293b; margin-bottom: 4px;">Stock critique - NPK</div>
-                <div style="font-size: 13px; color: #64748b;">Région de Sikasso - Seuil atteint</div>
-              </div>
-              <div style="padding: 12px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px;">
-                <div style="font-weight: 600; color: #1e293b; margin-bottom: 4px;">Nouvelle récolte enregistrée</div>
-                <div style="font-size: 13px; color: #64748b;">Parcelle Nord - 15 tonnes</div>
-              </div>
-              <div style="padding: 12px; background: #f8fafc; border-radius: 8px;">
-                <div style="font-weight: 600; color: #1e293b; margin-bottom: 4px;">Mise à jour météo</div>
-                <div style="font-size: 13px; color: #64748b;">Conditions favorables prévues</div>
-              </div>
-            </div>
-            <button onclick="this.closest('div').parentElement.remove()" style="background: #1e293b; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600;">Fermer</button>
-          </div>
-        `;
-        
-        document.body.appendChild(modal);
-        
-        // Fermer en cliquant sur le fond
-        modal.addEventListener('click', function(e) {
-          if (e.target === modal) {
-            modal.remove();
-          }
-        });
-      }
-      
       // Initialisation des données dynamiques au chargement
       window.addEventListener('load', function() {
         console.log("🚀 Initialisation du dashboard manager avec données complètes");

@@ -3,21 +3,21 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SeneBI — Mon compte</title>
+    <title>SeneBI — Mon compte Client</title>
     <link rel="stylesheet" href="{{ asset('assets/css/base.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/compte.css') }}" />
   </head>
-  <body data-page="compte">
+  <body data-page="compte-client">
     <div class="app">
-      @include('header-manager')
-      
+      <div data-layout="header"></div>
 
       <main class="container compte-page">
         <header class="compte-hero">
           <div>
-            <h1>Mon compte</h1>
+            <h1>Mon compte Client</h1>
             <p>Profil, sécurité et préférences de notification.</p>
           </div>
+          <a class="compte-back-btn" href="{{ route('client.dashboard') }}" id="compteBackLink">Retour</a>
         </header>
 
         <div class="compte-grid">
@@ -25,15 +25,15 @@
             <div class="compte-card-head">
               <div class="compte-avatar" id="profileAvatar" aria-hidden="true">?</div>
               <div>
-                <h2>Profil</h2>
-                <p class="compte-card-sub">Vos informations et votre rôle dans SeneBI.</p>
+                <h2>Profil Client</h2>
+                <p class="compte-card-sub">Vos informations et votre rôle d'agriculteur.</p>
               </div>
             </div>
             <dl class="compte-dl">
-              <div><dt>Nom</dt><dd id="fieldName">—</dd></div>
-              <div><dt>Email</dt><dd id="fieldEmail">—</dd></div>
-              <div><dt>Entreprise</dt><dd id="fieldCompany">—</dd></div>
-              <div><dt>Rôle</dt><dd><span class="role-pill" id="fieldRole">—</span></dd></div>
+              <div><dt>Nom</dt><dd id="fieldName">Sidi</dd></div>
+              <div><dt>Email</dt><dd id="fieldEmail">sidi@senebi.sn</dd></div>
+              <div><dt>Entreprise</dt><dd id="fieldCompany">Ferme SeneBI</dd></div>
+              <div><dt>Rôle</dt><dd><span class="role-pill" id="fieldRole">Client</span></dd></div>
             </dl>
           </section>
 
@@ -55,6 +55,52 @@
               </div>
               <button class="compte-submit-btn" type="submit">Mettre à jour le mot de passe</button>
               <p class="form-feedback" id="passwordFeedback" aria-live="polite"></p>
+            </form>
+          </section>
+
+          <section class="card compte-card compte-card--wide">
+            <h2>Paramètres du compte</h2>
+            <p class="compte-card-sub">Préférences de notification (simulation — données enregistrées sur cet appareil).</p>
+            <form class="compte-prefs" id="prefsForm">
+              <label class="pref-row">
+                <input type="checkbox" id="prefEmail" name="emailAlerts" />
+                <span class="pref-body">
+                  <strong>Notifications par e-mail</strong>
+                  <span class="pref-desc">Résumés et alertes envoyés à votre adresse.</span>
+                </span>
+              </label>
+              <label class="pref-row">
+                <input type="checkbox" id="prefStock" name="stockAlerts" />
+                <span class="pref-body">
+                  <strong>Alertes stock</strong>
+                  <span class="pref-desc">Seuils critiques sur les intrants.</span>
+                </span>
+              </label>
+              <label class="pref-row">
+                <input type="checkbox" id="prefParcel" name="parcelReminders" />
+                <span class="pref-body">
+                  <strong>Rappels parcelles &​amp; récoltes</strong>
+                  <span class="pref-desc">Échéances et activités terrain.</span>
+                </span>
+              </label>
+              <label class="pref-row">
+                <input type="checkbox" id="prefDigest" name="weeklyDigest" />
+                <span class="pref-body">
+                  <strong>Résumé hebdomadaire</strong>
+                  <span class="pref-desc">Synthèse KPI une fois par semaine.</span>
+                </span>
+              </label>
+              <label class="pref-row">
+                <input type="checkbox" id="prefSms" name="smsAlerts" />
+                <span class="pref-body">
+                  <strong>SMS (démo)</strong>
+                  <span class="pref-desc">Simulation — non connecté à un opérateur.</span>
+                </span>
+              </label>
+              <div class="compte-form-actions">
+                <button class="compte-submit-btn compte-submit-btn--secondary" type="submit">Enregistrer les préférences</button>
+              </div>
+              <p class="form-feedback" id="prefsFeedback" aria-live="polite"></p>
             </form>
           </section>
 

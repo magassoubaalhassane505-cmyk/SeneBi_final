@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Catalogue des Intrants & Tarification - SeneBI</title>
     <link rel="stylesheet" href="{{ asset('assets/css/base.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}  " />
+    <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}" />
     
     <!-- Styles pour la cloche de notification -->
     <style>
@@ -153,7 +153,7 @@
         align-items: center;
         justify-content: center;
         margin-right: 12px;
-        font-size: 16px;
+        font-size: 18px;
         flex-shrink: 0;
       }
       
