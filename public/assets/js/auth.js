@@ -30,7 +30,7 @@
           role: normalizeRole(u.role || "client"),
           blocked: Boolean(u.blocked),
         }))
-        .filter((u) => u.email && u.password)
+        .filter((u) => u.email)
         .map((u) => {
           if (normalizeEmail(u.email) === "mimi.manager@senebi.ml" && u.role === "manager") {
             return { ...u, name: "Mimi" };
@@ -206,6 +206,10 @@
   }
 
   function initLoginPage() {
+    if (document.body.dataset.serverSide === '1') {
+      return;
+    }
+
     const form = document.querySelector("#loginForm");
     if (!form) return;
     const feedback = document.querySelector("#loginFeedback");
@@ -238,8 +242,23 @@
     const badge = document.querySelector("#roleBadge");
     const adminPanel = document.querySelector("#adminPanel");
 
-    // Afficher le contenu même sans authentification
-    const users = loadUsers();
+    // Utiliser en priorité la source serveur pour refléter fidèlement les validations manager.
+    // Le localStorage sert uniquement de secours si aucune donnée serveur n'est injectée.
+    const localUsers = loadUsers();
+    const approvedFromServer = (window.SeneBI?.approvedClients || []).map((u, index) => ({
+      id: String(u.id || `SRV-${index + 1}`),
+      name: u.name || "Client",
+      company: u.company || "SeneBI",
+      email: normalizeEmail(u.email || ""),
+      // Le mot de passe réel n'est pas exposé côté serveur; il peut être régénéré via l'UI.
+      password: "",
+      role: normalizeRole(u.role || "client"),
+      blocked: Boolean(u.blocked),
+    })).filter((u) => u.email);
+
+    let users = approvedFromServer.length ? approvedFromServer : localUsers;
+    saveUsers(users);
+    
     renderUsersList(users);
     renderAdminStats(users);
 
@@ -331,6 +350,12 @@
   };
 
   document.addEventListener("DOMContentLoaded", () => {
+    // Only initialize JavaScript auth if NOT using server-side auth
+    if (document.body.dataset.serverSide === '1') {
+      // Server-side auth enabled - don't interfere with forms
+      return;
+    }
+
     const page = document.body.dataset.page || "";
     if (page === "auth-login") initLoginPage();
     if (page === "auth-portal") initPortalPage();

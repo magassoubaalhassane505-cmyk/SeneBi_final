@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SeneBI - Connexion Client</title>
+    <title>SeneBI - Connexion</title>
     <link rel="stylesheet" href="{{ asset('assets/css/base.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/auth.css') }}" />
   </head>
@@ -14,14 +14,14 @@
         <div class="login-panel">
           <div class="login-brand">
             <img
-               class="login-brand-image"
+              class="login-brand-image"
               src="{{ asset('assets/img/logo.png') }}"
               alt="Logo SeneBI"
             />
           </div>
 
-          <h1>SeneBI: Espace Client</h1>
-          <p class="login-subtitle">Votre plateforme de suivi agricole</p>
+          <h1>SeneBI</h1>
+          <p class="login-subtitle">Connectez-vous à votre espace</p>
 
           @if (session('status'))
             <div class="form-feedback success">{{ session('status') }}</div>
@@ -35,21 +35,34 @@
             </div>
           @endif
 
-          <form id="loginForm" method="POST" action="{{ url('/login-client') }}" class="auth-form">
+          <form method="POST" action="{{ route('login.post') }}" class="auth-form">
             @csrf
             <label for="email">Email</label>
-            <input id="email" name="email" type="email" value="{{ old('email', 'sidi@sidi-agri.sn') }}" placeholder="Ex: votre-email@entreprise.com" required />
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value="{{ old('email') }}"
+              placeholder="Ex: votre-email@entreprise.com"
+              required
+              autocomplete="username"
+            />
 
             <label for="password">Mot de passe</label>
-            <input id="password" name="password" type="password" value="client123" placeholder="Votre mot de passe" required />
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Votre mot de passe"
+              required
+              autocomplete="current-password"
+            />
 
             <button class="btn login-submit" type="submit">Se connecter</button>
-            <div id="loginFeedback" class="form-feedback" aria-live="polite"></div>
           </form>
 
-          <div class="auth-switch">
-            <p>Vous êtes un manager ?</p>
-            <a href="{{ route('login.manager') }}" class="btn secondary">Accès Manager</a>
+          <div class="auth-switch" style="margin-top: 12px;">
+            <a href="{{ route('password.request') }}" style="color: #4b5563; font-weight: 500;">Mot de passe oublié ?</a>
           </div>
 
           <div class="auth-switch" style="margin-top: 16px;">
@@ -58,6 +71,5 @@
         </div>
       </section>
     </main>
-
   </body>
 </html>

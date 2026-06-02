@@ -5,6 +5,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ManagementController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\ClientApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,20 +17,30 @@ use App\Http\Controllers\ManagementController;
 */
 
 // --- ACCUEIL & PORTAIL (STRUCTURE ORIGINALE) ---
-// Page d'accueil principale : redirige vers la connexion client
-Route::get('/', [AuthController::class, 'loginClient'])->name('welcome');
+Route::get('/', fn () => redirect()->route('login'))->name('welcome');
 Route::get('/index', [DashboardController::class, 'index'])->name('home');
 Route::get('/secure-portal', [AuthController::class, 'portal'])->middleware('public.portal')->name('secure.portal');
 
-// --- AUTHENTIFICATION (PAGES DE CONNEXION) ---
-Route::get('/login-manager', [AuthController::class, 'login'])->name('login.manager');
-Route::post('/login-manager', [AuthController::class, 'authenticate'])->name('login.manager.post');
+// --- AUTHENTIFICATION (connexion unique) ---
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+
+// Rétrocompatibilité : anciennes URLs
+Route::get('/login-manager', [AuthController::class, 'loginManager'])->name('login.manager');
+Route::post('/login-manager', [AuthController::class, 'login'])->name('login.manager.post');
 Route::get('/login-client', [AuthController::class, 'loginClient'])->name('login.client');
-Route::post('/login-client', [AuthController::class, 'authenticateClient'])->name('login.client.post');
+Route::post('/login-client', [AuthController::class, 'login'])->name('login.client.post');
+Route::get('/register', [RegisterController::class, 'create'])->name('register');
+Route::post('/register', [RegisterController::class, 'store'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/password/forgot', [PasswordResetController::class, 'showForgotForm'])->name('password.request');
+Route::post('/password/forgot', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
+Route::get('/password/reset/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+Route::post('/password/reset', [PasswordResetController::class, 'resetPassword'])->name('password.update');
+
 // --- ESPACE MANAGER (ADMINISTRATION - STRUCTURE PRINCIPALE) ---
-Route::prefix('manager')->group(function () {
+Route::prefix('manager')->middleware('auth')->group(function () {
     
     // Dashboard Principal Manager (dashboard.html)
     Route::get('/dashboard', [DashboardController::class, 'managerDashboard'])->name('manager.dashboard');
@@ -46,10 +59,16 @@ Route::prefix('manager')->group(function () {
     
     // Compte Manager (compte.html)
     Route::get('/compte', [ManagementController::class, 'compte'])->name('manager.compte');
+
+    // Approbation des clients inscrits
+    Route::post('/clients/approve/{user}', [ManagementController::class, 'approveClient'])->name('manager.clients.approve');
+    
+    // Rejet des clients inscrits
+    Route::post('/clients/reject/{user}', [ManagementController::class, 'rejectClient'])->name('manager.clients.reject');
 });
 
 // --- ESPACE CLIENT (AGRICULTEURS - STRUCTURE CLIENT) ---
-Route::prefix('client')->group(function () {
+Route::prefix('client')->middleware('auth')->group(function () {
     
     // Dashboard Client (client-dashboard.html)
     Route::get('/dashboard', [ClientController::class, 'clientDashboard'])->name('client.dashboard');
@@ -65,6 +84,15 @@ Route::prefix('client')->group(function () {
     
     // Profil & Compte Client (compte.html)
     Route::get('/mon-compte', [ClientController::class, 'compte'])->name('client.compte');
+
+    Route::prefix('api')->group(function () {
+        Route::get('/parcelles', [ClientApiController::class, 'parcellesIndex']);
+        Route::post('/parcelles', [ClientApiController::class, 'parcellesStore']);
+        Route::put('/parcelles/{parcelle}', [ClientApiController::class, 'parcellesUpdate']);
+        Route::delete('/parcelles/{parcelle}', [ClientApiController::class, 'parcellesDestroy']);
+        Route::get('/stocks', [ClientApiController::class, 'stocksIndex']);
+        Route::put('/stocks/{stock}', [ClientApiController::class, 'stocksUpdate']);
+    });
 });
 
 // --- PAGES AUTONOMES (SANS PREFIX) ---

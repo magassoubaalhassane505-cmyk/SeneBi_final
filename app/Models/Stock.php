@@ -6,10 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 
-#[Fillable(['nom', 'type', 'quantite_actuelle', 'seuil_critique', 'cout_unitaire'])]
+#[Fillable(['user_id', 'nom', 'type', 'quantite_actuelle', 'seuil_critique', 'cout_unitaire'])]
 class Stock extends Model
 {
     use HasFactory;
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     protected $casts = [
         'quantite_actuelle' => 'decimal:2',

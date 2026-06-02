@@ -155,8 +155,17 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script>
+      window.SeneBI_SERVER = {
+        useDb: true,
+        csrf: @json(csrf_token()),
+        apiBase: @json(url('/client/api')),
+        stocks: @json($stocks),
+      };
+    </script>
     <script src="{{ asset('assets/js/layout.js') }}"></script>
     <script src="{{ asset('assets/js/core.js') }}"></script>
+    <script src="{{ asset('assets/js/stocks-db-sync.js') }}"></script>
     <script src="{{ asset('assets/js/stocks.js') }}"></script>
     
     <script>

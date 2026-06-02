@@ -19,6 +19,14 @@
     const list = SeneBI.qs("#parcelsList");
     if (!list) return;
 
+    if (typeof window.getUiParcelsFromServer === "function") {
+      const fromServer = window.getUiParcelsFromServer();
+      if (fromServer) {
+        renderParcelsList(fromServer, list);
+        return;
+      }
+    }
+
     const uiParcels = [
       // RÉGION BAMAKO (bko)
       { id: "BKO-N1", name: "Parcelle Bamako Nord-1", culture: "Riz", areaHa: 4.2, status: "En culture", growth: 80, cost: 98000, performance: 12, plantingDate: "10/01/2026" },
@@ -73,6 +81,10 @@
       { id: "PC", name: "Parcelle Centre", culture: "Maïs", areaHa: 6.0, status: "En culture", growth: 85, cost: 158000, performance: null, plantingDate: "08/01/2026" },
     ];
 
+    renderParcelsList(uiParcels, list);
+  }
+
+  function renderParcelsList(uiParcels, list) {
     const activityJournal = {
       // RÉGION BAMAKO
       "BKO-N1": [
@@ -237,6 +249,13 @@
 
     const badgeClass = (st) => (st === "En culture" ? "green" : st === "Récoltée" ? "blue" : "yellow");
 
+    if (!uiParcels.length) {
+      list.innerHTML = '<p class="small muted" style="padding:24px;text-align:center;">Aucune parcelle enregistrée. Utilisez le formulaire ci-dessus.</p>';
+      const parcelSelect = SeneBI.qs("#parcelle-recoltee");
+      if (parcelSelect) parcelSelect.innerHTML = '<option value="">Sélectionner une parcelle</option>';
+      return;
+    }
+
     list.innerHTML = uiParcels
       .map((p) => {
         const h = lastHarvestByParcel.get(p.id);
@@ -303,7 +322,7 @@
             ${p.status !== "En jachère" ? `
             <!-- Bouton d'action rapide - Style SeneBI moderne -->
             <div class="parcel-actions">
-              <button class="apply-intrant-btn" onclick="window.location.href='/manager/stocks'">
+              <button class="apply-intrant-btn" onclick="window.location.href='/client/stocks'">
                 Appliquer Intrant
               </button>
             </div>
@@ -318,6 +337,8 @@
       parcelSelect.innerHTML = `<option value="">Sélectionner une parcelle</option>` + uiParcels.map((p) => `<option value="${p.id}">${p.name}</option>`).join("");
     }
   }
+
+  window.renderParcels = renderParcels;
 
   function bindForm() {
     const openBtn = SeneBI.qs("#openHarvestBtn");

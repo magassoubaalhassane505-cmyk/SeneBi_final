@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/base.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/auth.css') }}" />
   </head>
-  <body data-page="auth-login">
+  <body data-page="auth-login" data-server-side="1">
     <main class="auth-shell">
       <section class="login-frame">
         <aside class="login-photo" aria-hidden="true"></aside>
@@ -35,7 +35,7 @@
             @endif
             
             <label for="email">Email</label>
-            <input id="email" name="email" type="email" value="mimi.manager@senebi.ml" placeholder="Ex: adiaratou@sidi-agri.com" required />
+            <input id="email" name="email" type="email" value="mimi.manager@senebi.sn" placeholder="Ex: adiaratou@sidi-agri.com" required />
 
             <label for="password">Mot de passe</label>
             <input id="password" name="password" type="password" value="manager123" placeholder="Votre mot de passe" required />

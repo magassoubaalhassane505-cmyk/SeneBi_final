@@ -3,6 +3,15 @@
   const STORAGE_KEY = "senebi_state_v1";
   const AUTH_KEY = "senebi_auth_user";
 
+  function serverAuth() {
+    // When Laravel session auth is used, pages inject the current user into window.__SENEBI_AUTH__.
+    // This prevents client-side redirects based on localStorage when server-side auth is active.
+    const a = window.__SENEBI_AUTH__;
+    if (!a || typeof a !== "object") return null;
+    const role = a.role === "admin" ? "manager" : a.role;
+    return { ...a, role };
+  }
+
   function deepClone(obj) {
     return JSON.parse(JSON.stringify(obj));
   }
@@ -95,6 +104,8 @@
   }
 
   function getAuth() {
+    const srv = serverAuth();
+    if (srv) return srv;
     try {
       const parsed = JSON.parse(localStorage.getItem(AUTH_KEY) || "null");
       if (!parsed) return null;
@@ -382,7 +393,9 @@
     bindTopbarAuth(getAuth());
   }
 
+  const existingSeneBI = window.SeneBI || {};
   window.SeneBI = {
+    ...existingSeneBI,
     DefaultState,
     loadState,
     saveState,

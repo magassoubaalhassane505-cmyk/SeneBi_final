@@ -1,4 +1,14 @@
 <header class="topbar">
+  @php($u = auth()->user())
+  <script>
+    window.__SENEBI_AUTH__ = {{ \Illuminate\Support\Js::from([
+      'id' => optional($u)->id,
+      'name' => optional($u)->name,
+      'email' => optional($u)->email,
+      'company' => optional($u)->company,
+      'role' => optional($u)->role,
+    ]) }};
+  </script>
   <div class="topbar-inner">
     <!-- Partie Gauche : Logo SeneBI -->
     <a class="brand" href="{{ url('/client/dashboard') }}">
@@ -49,7 +59,7 @@
       <!-- Partie Droite : Actions -->
       <div class="topbar-actions">
         <div class="auth-pills">
-          <a class="pill user-pill" href="{{ url('/client/mon-compte') }}">Sidi</a>
+          <a class="pill user-pill" href="{{ url('/client/mon-compte') }}">{{ optional($u)->name ?? 'Mon compte' }}</a>
           <form action="{{ route('logout') }}" method="POST" style="display:inline-flex; margin:0;">
             @csrf
             <button type="submit" class="pill auth-logout">Déconnexion</button>

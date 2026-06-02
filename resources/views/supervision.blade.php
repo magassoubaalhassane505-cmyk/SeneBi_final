@@ -102,7 +102,120 @@
           </article>
         </section>
 
-        <section class="farmers-directory">
+        @if (session('status'))
+          <div class="alert-banner" style="margin-bottom: 24px;">
+            <div id="stockAlertText">{{ session('status') }}</div>
+          </div>
+        @endif
+
+        <section class="pending-approvals" style="margin-top: 24px;">
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h3 style="margin:0; font-size:16px; color: #1f2937; font-weight: 600;">Nouvelles demandes d'inscription</h3>
+                <div class="small muted" style="font-size: 13px; margin-top: 4px;">Clients en attente de validation</div>
+              </div>
+              @if ($pendingClients->count() > 0)
+                <span class="tag" style="background: #fef3c7; color: #92400e; font-weight: 600; padding: 4px 12px; border-radius: 12px; font-size: 12px;">{{ $pendingClients->count() }} à valider</span>
+              @else
+                <span class="tag" style="background: #d1fae5; color: #065f46; font-weight: 600; padding: 4px 12px; border-radius: 12px; font-size: 12px;">✓ À jour</span>
+              @endif
+            </div>
+
+            @if ($pendingClients->count() > 0)
+              <div class="table-container" style="margin-top: 0;">
+                <table class="farmers-table" style="font-size: 14px;">
+                  <thead>
+                    <tr style="background: #f9fafb;">
+                      <th style="width: 18%; color: #6b7280; font-weight: 600; padding: 12px;">Nom</th>
+                      <th style="width: 18%; color: #6b7280; font-weight: 600; padding: 12px;">Email</th>
+                      <th style="width: 15%; color: #6b7280; font-weight: 600; padding: 12px;">Téléphone</th>
+                      <th style="width: 18%; color: #6b7280; font-weight: 600; padding: 12px;">Entreprise</th>
+                      <th style="width: 13%; color: #6b7280; font-weight: 600; padding: 12px;">Date</th>
+                      <th style="width: 18%; color: #6b7280; font-weight: 600; padding: 12px; text-align: center;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($pendingClients as $client)
+                      <tr style="border-bottom: 1px solid #e5e7eb; transition: background 0.2s;">
+                        <td style="padding: 12px; color: #1f2937; font-weight: 500;">{{ $client->name }}</td>
+                        <td style="padding: 12px; color: #4b5563;">{{ $client->email }}</td>
+                        <td style="padding: 12px; color: #4b5563;">{{ $client->phone ?? '-' }}</td>
+                        <td style="padding: 12px; color: #4b5563;">{{ $client->company ?? '-' }}</td>
+                        <td style="padding: 12px; color: #6b7280; font-size: 13px;">{{ $client->created_at->format('d/m/Y') }}</td>
+                        <td style="padding: 12px; display: flex; justify-content: center; gap: 8px;">
+                          <form method="POST" action="{{ route('manager.clients.approve', $client) }}" style="display: inline;">
+                            @csrf
+                            <button type="submit" class="btn good" style="font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; transition: all 0.2s;">✓ Approuver</button>
+                          </form>
+                          <button type="button" class="btn warn" style="font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; transition: all 0.2s; background: #fee2e2; color: #991b1b; border: none;" onclick="openRejectModal({{ $client->id }}, '{{ $client->name }}')">✕ Rejeter</button>
+                        </td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            @else
+              <div style="text-align: center; padding: 48px 24px; color: #10b981;">
+                <svg style="width: 48px; height: 48px; margin: 0 auto 16px; opacity: 0.8;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>
+                </svg>
+                <p style="margin: 0; font-size: 15px; font-weight: 500;">Aucune demande en attente</p>
+                <p style="margin: 8px 0 0 0; font-size: 13px; color: #6b7280;">Tous les clients sont validés ✓</p>
+              </div>
+            @endif
+          </article>
+        </section>
+
+        <section class="activity-logs" style="margin-top: 24px;">
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h3 style="margin:0; font-size:16px;">Historique des actions</h3>
+                <div class="small muted">Approbations, rejets et événements récents</div>
+              </div>
+              <span class="tag muted">Journal</span>
+            </div>
+            @if ($activityLogs->count() > 0)
+              <div class="table-container">
+                <table class="farmers-table" style="font-size: 14px;">
+                  <thead>
+                    <tr style="background: #f9fafb;">
+                      <th style="padding: 12px;">Date</th>
+                      <th style="padding: 12px;">Action</th>
+                      <th style="padding: 12px;">Manager</th>
+                      <th style="padding: 12px;">Client concerné</th>
+                      <th style="padding: 12px;">Détail</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($activityLogs as $log)
+                      <tr style="border-bottom: 1px solid #e5e7eb;">
+                        <td style="padding: 12px; color: #6b7280;">{{ $log->created_at->format('d/m/Y H:i') }}</td>
+                        <td style="padding: 12px;">
+                          @if ($log->action === 'client.approved')
+                            <span class="tag" style="background:#d1fae5;color:#065f46;">Approuvé</span>
+                          @elseif ($log->action === 'client.rejected')
+                            <span class="tag" style="background:#fee2e2;color:#991b1b;">Rejeté</span>
+                          @else
+                            <span class="tag">{{ $log->action }}</span>
+                          @endif
+                        </td>
+                        <td style="padding: 12px;">{{ optional($log->actor)->name ?? '—' }}</td>
+                        <td style="padding: 12px;">{{ optional($log->targetUser)->name ?? '—' }}</td>
+                        <td style="padding: 12px; color: #4b5563;">{{ $log->details ?? '—' }}</td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            @else
+              <p class="small muted" style="padding: 24px; text-align: center; margin: 0;">Aucune action enregistrée pour le moment.</p>
+            @endif
+          </article>
+        </section>
+
+        <section class="farmers-directory" style="margin-top: 24px;">
           <article class="card">
             <div class="card-header">
               <div>
@@ -195,8 +308,45 @@
     <script src="{{ asset('assets/js/auth.js') }}"></script>
     <script src="{{ asset('assets/js/supervision.js') }}"></script>
     
-    <!-- JavaScript pour la navigation active -->
+    <!-- Modal de rejet -->
+    <div id="rejectModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+      <div style="background: white; border-radius: 8px; padding: 32px; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
+        <h2 style="margin: 0 0 16px 0; font-size: 18px;">Rejeter le compte</h2>
+        <p id="rejectClientName" style="color: #64748b; margin: 0 0 24px 0;"></p>
+        
+        <form id="rejectForm" method="POST" style="margin-bottom: 16px;">
+          @csrf
+          <label for="rejectReason" style="display: block; margin-bottom: 8px; font-weight: 500;">Raison du rejet (optionnel)</label>
+          <textarea id="rejectReason" name="reason" style="width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px; font-family: inherit; font-size: 14px; resize: vertical; min-height: 80px;" placeholder="Exemple: Données incomplètes, doublon, etc."></textarea>
+          
+          <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 24px;">
+            <button type="button" onclick="closeRejectModal()" class="btn secondary" style="padding: 8px 16px;">Annuler</button>
+            <button type="submit" class="btn warn" style="padding: 8px 16px;">Confirmer le rejet</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <!-- JavaScript pour la navigation active et modale rejet -->
     <script>
+      function openRejectModal(clientId, clientName) {
+        document.getElementById('rejectClientName').textContent = 'Êtes-vous sûr de rejeter ' + clientName + ' ?';
+        document.getElementById('rejectForm').action = '/manager/clients/reject/' + clientId;
+        document.getElementById('rejectModal').style.display = 'flex';
+      }
+
+      function closeRejectModal() {
+        document.getElementById('rejectModal').style.display = 'none';
+        document.getElementById('rejectReason').value = '';
+      }
+
+      // Fermer la modale si on clique en dehors
+      document.getElementById('rejectModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeRejectModal();
+        }
+      });
+
       document.addEventListener('DOMContentLoaded', function() {
         // Détecter la page active dans la navigation
         const navLinks = document.querySelectorAll('.manager-nav a');

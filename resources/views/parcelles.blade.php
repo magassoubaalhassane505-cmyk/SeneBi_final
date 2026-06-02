@@ -263,6 +263,33 @@
           </div>
         </div>
 
+        <section class="card" id="addParcelPanel" style="margin-bottom: 24px;">
+          <h2 class="panel-title" style="margin-bottom: 16px;">Ajouter une parcelle</h2>
+          <form class="panel-form" id="addParcelForm">
+            <div class="panel-grid-2">
+              <div class="panel-field">
+                <label for="parcelNom">Nom</label>
+                <input id="parcelNom" type="text" placeholder="Ex: Parcelle Nord" required />
+              </div>
+              <div class="panel-field">
+                <label for="parcelRegion">Région</label>
+                <input id="parcelRegion" type="text" placeholder="Ex: Kayes" required />
+              </div>
+              <div class="panel-field">
+                <label for="parcelSurface">Surface (ha)</label>
+                <input id="parcelSurface" type="number" min="0.1" step="0.1" placeholder="Ex: 4.5" required />
+              </div>
+              <div class="panel-field">
+                <label for="parcelCulture">Culture</label>
+                <input id="parcelCulture" type="text" placeholder="Ex: Riz" required />
+              </div>
+            </div>
+            <div class="panel-actions">
+              <button class="btn-primary" type="submit">Enregistrer la parcelle</button>
+            </div>
+          </form>
+        </section>
+
         <section class="card harvest-panel" id="harvestPanel" aria-hidden="true">
           <h2 class="panel-title">Nouvelle Récolte</h2>
 
@@ -312,8 +339,17 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script>
+      window.SeneBI_SERVER = {
+        useDb: true,
+        csrf: @json(csrf_token()),
+        apiBase: @json(url('/client/api')),
+        parcelles: @json($parcelles),
+      };
+    </script>
     <script src="{{ asset('assets/js/layout.js') }}"></script>
     <script src="{{ asset('assets/js/core.js') }}"></script>
+    <script src="{{ asset('assets/js/parcelles-db.js') }}"></script>
     <script src="{{ asset('assets/js/parcelles.js') }}"></script>
     <script src="{{ asset('assets/js/region-filter.js') }}"></script>
     <script src="{{ asset('assets/js/region-rentabilite.js') }}"></script>

@@ -26,7 +26,7 @@
           <form method="POST" action="{{ url('/login-client') }}" class="auth-form">
             @csrf
             <label for="email">Email</label>
-            <input id="email" name="email" type="email" value="sidi@sidi-agri.ml" placeholder="Ex: votre-email@entreprise.com" required />
+            <input id="email" name="email" type="email" value="sidi@sidi-agri.sn" placeholder="Ex: votre-email@entreprise.com" required />
 
             <label for="password">Mot de passe</label>
             <input id="password" name="password" type="password" value="client123" placeholder="Votre mot de passe" required />

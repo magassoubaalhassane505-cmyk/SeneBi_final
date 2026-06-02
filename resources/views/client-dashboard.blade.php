@@ -145,7 +145,13 @@
                     <div class="weather-location">Sikasso</div>
                     <div class="weather-temp">32°C</div>
                     <div class="weather-condition">Temps sec</div>
-                    <div style="font-weight: 600; margin-top: 4px; color: #10b981;">Conseil SeneBI : Conditions optimales pour le traitement des sols.</div>
+                    <div style="font-weight: 600; margin-top: 4px; color: #10b981;">
+                        @if($derniereVisite)
+                            {{ $derniereVisite->action_effectuee }} - Visite du {{ $derniereVisite->date_visite->format('d/m/Y') }}
+                        @else
+                            Conditions optimales observées sur vos parcelles. Suivez les indicateurs ci-dessous.
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
