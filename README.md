@@ -10,7 +10,7 @@ Application **Laravel 13** (PHP 8.3+) avec authentification par rôles (**manage
 
 | Espace | Rôle | Pages principales |
 |--------|------|-------------------|
-| **Manager** | `admin` / `manager` | Dashboard, supervision clients, catalogue intrants, stocks, contrôle des visites, compte |
+| **Manager** | `admin` / `manager` | Dashboard, supervision clients, analyses BI, stocks, contrôle des visites, compte |
 | **Client** | `client` (compte approuvé) | Dashboard, parcelles, stocks, calculateur de rentabilité, mon compte |
 | **Public** | — | Connexion, inscription, mot de passe oublié, portail sécurisé |
 

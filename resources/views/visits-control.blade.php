@@ -6,6 +6,7 @@
     <title>Planning des Visites - SeneBI</title>
     <link rel="stylesheet" href="{{ asset('assets/css/base.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/visual-harmony.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
 <style>
@@ -77,7 +78,7 @@
       @include('header-manager')
 
       <main class="container">
-        <div class="page-title">
+        <div class="page-title senebi-page-transition">
           <div>
             <h1>Planning des Visites</h1>
             <p>Organisation des déplacements chez les agriculteurs et gestion des urgences</p>
@@ -104,11 +105,11 @@
                   <div class="visit-calendar-badge" style="min-width:64px; height:68px; border-radius:12px; background:linear-gradient(135deg,#eff6ff,#dbeafe); border:1px solid #bfdbfe; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(59,130,246,0.08);">
                     <span style="font-size:20px; font-weight:900; color:#1e40af; line-height:1;">{{ $visite->date_visite->format('d') }}</span>
                     <span style="font-size:11px; font-weight:700; color:#3b82f6; text-transform:uppercase; margin-top:2px;">{{ $visite->date_visite->format('M') }}</span>
-                    <span style="font-size:10px; color:#64748b; margin-top:2px;"><i class="fas fa-clock" style="margin-right:3px;"></i>{{ $visite->date_visite->format('H:i') }}</span>
-                  </div>
-                  <div style="flex:1; min-width:0;">
-                    <div style="font-size:14px; font-weight:700; color:#111827; margin-bottom:2px;">{{ $visite->user->name ?? 'N/A' }}</div>
-                    <div style="font-size:12px; color:#6b7280; display:flex; align-items:center; gap:4px; margin-bottom:2px;"><i class="fas fa-map-marker-alt" style="font-size:10px; color:#ef4444;"></i> {{ $visite->user->location ?? 'Non spécifié' }}</div>
+                     <span style="font-size:10px; color:#64748b; margin-top:2px;"><div class="icon-box-sm icon-box" style="display:inline-flex; margin-right:3px;"><i class="fas fa-clock"></i></div>{{ $visite->date_visite->format('H:i') }}</span>
+                   </div>
+                   <div style="flex:1; min-width:0;">
+                     <div style="font-size:14px; font-weight:700; color:#111827; margin-bottom:2px;">{{ $visite->user->name ?? 'N/A' }}</div>
+                     <div style="font-size:12px; color:#6b7280; display:flex; align-items:center; gap:4px; margin-bottom:2px;"><div class="icon-box-sm icon-box red" style="display:inline-flex;"><i class="fas fa-map-marker-alt"></i></div> {{ $visite->user->location ?? 'Non spécifié' }}</div>
                     <div style="font-size:12px; color:#475569;">Motif : {{ $visite->action_effectuee }}</div>
                   </div>
                   <div>
@@ -148,12 +149,12 @@
                   <div class="urgent-card" style="display:flex; align-items:flex-start; gap:10px; padding:12px; border-radius:12px; border:1px solid #fecaca; background:#fff; margin-bottom:10px; transition:all .2s ease; cursor:default;"
                        onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 10px 20px rgba(239,68,68,0.08)';this.style.borderColor='#fca5a5';"
                        onmouseout="this.style.transform='';this.style.boxShadow='';this.style.borderColor='#fecaca';">
-                    <div style="width:32px; height:32px; border-radius:10px; background:#fef2f2; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                      <i class="fas fa-circle-exclamation" style="color:#ef4444; font-size:14px;"></i>
+                    <div class="icon-box-sm icon-box red" style="display: inline-flex;">
+                      <i class="fas fa-circle-exclamation"></i>
                     </div>
                     <div style="flex:1; min-width:0;">
                       <div style="font-size:13px; font-weight:700; color:#111827; margin-bottom:2px;">{{ $urgentClient['name'] }}</div>
-                      <div style="font-size:12px; color:#6b7280; display:flex; align-items:center; gap:4px; margin-bottom:2px;"><i class="fas fa-map-marker-alt" style="font-size:10px; color:#ef4444;"></i> {{ $urgentClient['location'] }}</div>
+                       <div style="font-size:12px; color:#6b7280; display:flex; align-items:center; gap:4px; margin-bottom:2px;"><div class="icon-box-sm icon-box red" style="display:inline-flex;"><i class="fas fa-map-marker-alt"></i></div> {{ $urgentClient['location'] }}</div>
                       <div style="font-size:12px; color:#991b1b; font-weight:600;">Stock {{ $urgentClient['intrant'] }} <span style="background:#fef2f2; padding:2px 6px; border-radius:999px; font-size:11px; border:1px solid #fecaca;">{{ $urgentClient['percentage'] }}%</span></div>
                     </div>
                     <button class="btn" style="font-size:11px; padding:6px 10px; border-radius:8px; background:#ef4444; color:#fff; border:none; cursor:pointer; white-space:nowrap;" onclick="planUrgentVisit(this, '{{ $urgentClient['name'] }}', '{{ $urgentClient['location'] }}', 'Contrôle stock {{ $urgentClient['intrant'] }}')">Planifier</button>
@@ -303,8 +304,8 @@
                 @foreach($urgentClients as $urgentClient)
                   <div class="report-card" style="display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; padding:12px; background:#fffbeb; border-radius:8px; border-left:4px solid #f59e0b; transition:all .2s ease;"
                        onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 16px rgba(245,158,11,0.08)';">
-                    <div style="width:32px; height:32px; border-radius:10px; background:#fef3c7; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                      <i class="fas fa-exclamation-triangle" style="color:#f59e0b; font-size:14px;"></i>
+                    <div class="icon-box-sm icon-box amber" style="display: inline-flex;">
+                      <i class="fas fa-exclamation-triangle"></i>
                     </div>
                     <div style="flex:1; min-width:0;">
                       <div style="font-weight:600; font-size:14px; color:#111827; margin-bottom:2px;">{{ $urgentClient['name'] }}</div>

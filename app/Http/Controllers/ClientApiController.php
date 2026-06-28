@@ -292,6 +292,8 @@ class ClientApiController extends Controller
             $data = $request->validate([
                 'stock_id' => 'required|exists:stocks,id',
                 'quantite' => 'required|numeric|min:0.01',
+                'cout_unitaire' => 'nullable|numeric|min:0',
+                'cout_total' => 'nullable|numeric|min:0',
                 'description' => 'nullable|string',
                 'date' => 'required|date',
             ]);
@@ -301,6 +303,14 @@ class ClientApiController extends Controller
 
             $quantiteAvant = $stock->quantite_actuelle;
             $stock->quantite_actuelle += $data['quantite'];
+
+            if (!empty($data['cout_unitaire']) || !empty($data['cout_total'])) {
+                $coutEntree = !empty($data['cout_total']) ? $data['cout_total'] / $data['quantite'] : $data['cout_unitaire'];
+                $valeurAvant = $quantiteAvant * $stock->cout_unitaire;
+                $valeurAjoutee = $coutEntree * $data['quantite'];
+                $stock->cout_unitaire = ($valeurAvant + $valeurAjoutee) / $stock->quantite_actuelle;
+            }
+
             $stock->save();
 
             StockMouvement::create([
@@ -467,5 +477,44 @@ class ClientApiController extends Controller
         }
 
         return $defaults[$key] ?? 1500;
+    }
+
+    public function storeObjectifs(Request $request)
+    {
+        $data = $request->validate([
+            'objectif_production' => 'nullable|numeric|min:0',
+            'objectif_ca' => 'nullable|numeric|min:0',
+            'objectif_surface' => 'nullable|numeric|min:0',
+        ]);
+
+        $user = Auth::user();
+
+        $objectif = \App\Models\Objectif::updateOrCreate(
+            ['user_id' => $user->id, 'saison' => $user->saison ?? '2026'],
+            [
+                'objectif_production' => $data['objectif_production'] ?? 0,
+                'objectif_ca' => $data['objectif_ca'] ?? 0,
+                'objectif_surface' => $data['objectif_surface'] ?? 0,
+            ]
+        );
+
+        return response()->json(['data' => $objectif, 'success' => true]);
+    }
+    
+    public function storePdfExport(Request $request)
+    {
+        $data = $request->validate([
+            'type' => 'required|string|max:50',
+        ]);
+        
+        $user = Auth::user();
+        
+        $pdfExport = \App\Models\PdfExport::create([
+            'user_id' => $user->id,
+            'type' => $data['type'],
+            'file_path' => "exports/rentabilite-{$user->id}-" . now()->format('YmdHis') . ".pdf",
+        ]);
+        
+        return response()->json(['data' => $pdfExport, 'success' => true]);
     }
 }

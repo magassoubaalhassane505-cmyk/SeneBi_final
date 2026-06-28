@@ -268,9 +268,9 @@
 .kpi-icon.purple { background: #f2e8ff; color: #7c3aed; }
 
 .charts-grid {
-  margin-top: 14px;
+  margin-top: 24px;
   display: grid;
-  gap: 14px;
+  gap: 16px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -283,14 +283,19 @@
 
 .chart-wrap {
   height: 300px;
+  position: relative;
 }
 
 .table-card {
-  margin-top: 14px;
+  margin-top: 24px;
 }
 
 .table-wrap {
   overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
 }
 
 .table {
@@ -300,39 +305,77 @@
 
 .table thead th {
   text-align: left;
-  background: #f5f7fb;
-  padding: 10px 8px;
+  background: #f8fafc;
+  padding: 12px 16px;
   font-size: 12px;
-  color: rgba(15, 23, 42, 0.55);
-  font-weight: 900;
+  color: var(--muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border);
 }
 
 .table tbody td {
-  border-top: 1px solid rgba(15, 23, 42, 0.08);
-  padding: 10px 8px;
+  border-top: 1px solid rgba(15,23,42,0.06);
+  padding: 12px 16px;
   font-size: 13px;
+  color: var(--text);
+  background: var(--card);
+}
+
+.table tbody tr {
+  transition: background var(--anim-fast) ease;
+}
+
+.table tbody tr:hover {
+  background: #f8fafc;
 }
 
 .table .money {
-  font-weight: 800;
+  font-weight: 700;
+  color: var(--text);
 }
 
 .table .total-row td {
-  background: #f5f7fb;
-  font-weight: 800;
+  background: #f8fafc;
+  font-weight: 700;
+  border-top: 2px solid var(--border);
 }
 
 .table .total-row td:last-child {
-  color: #0ea34a;
+  color: var(--accent);
 }
 
 .export-box {
-  margin-top: 14px;
-  border: 1px solid #d6f5e9;
-  background: #f1fffa;
+  margin-top: 28px;
+  border: 1px solid var(--border);
+  background: var(--card);
   border-radius: var(--radius);
-  padding: 16px;
+  box-shadow: var(--shadow);
+  padding: 24px;
+  transition: transform var(--anim-fast) ease, box-shadow var(--anim-fast) ease;
 }
+
+.export-box:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.bilan-legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.bilan-dot--rev { background: var(--accent); }
+.bilan-dot--cost { background: #ef4444; }
+.bilan-dot--profit { background: #8b5cf6; }
 
 .export-title {
   display: flex;
@@ -346,7 +389,7 @@
 
 .export-title p {
   margin: 6px 0 0;
-  color: rgba(15, 23, 42, 0.6);
+  color: var(--muted);
   font-size: 13px;
   max-width: 980px;
 }
@@ -358,10 +401,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #08a046;
-  color: #fff;
-  font-weight: 900;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
   flex-shrink: 0;
+  transition: transform var(--anim-fast) ease, box-shadow var(--anim-fast) ease;
+}
+
+.export-icon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.22);
 }
 
 .export-items {
@@ -393,14 +442,7 @@
   padding: 10px 14px;
 }
 
-@media (max-width: 980px) {
-  .calc-grid-3,
-  .calc-grid-4 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .calc-results {
-    grid-template-columns: 1fr 1fr;
-  }
+@media (max-width: 768px) {
   .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .charts-grid { grid-template-columns: 1fr; }
   .export-items { grid-template-columns: 1fr; }
@@ -413,6 +455,992 @@
   .calc-grid-4,
   .calc-results {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   SECTIONS RENTABILITÉ SeneBI — Style harmonisé (light)
+   ============================================ */
+
+.forecasts-section,
+.comparison-section,
+.costs-section,
+.performance-badge-section,
+.top-cultures-section,
+.ai-recommendations-section,
+.pdf-history-section {
+  margin-top: 28px;
+}
+
+.forecasts-section .card-header,
+.comparison-section .card-header,
+.costs-section .card-header,
+.performance-badge-section .card-header,
+.top-cultures-section .card-header,
+.ai-recommendations-section .card-header,
+.pdf-history-section .card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.forecasts-grid,
+.comparison-grid,
+.costs-grid,
+.top-cultures-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* Forecast cards — style KPI */
+.forecast-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  text-align: center;
+  transition: transform var(--anim-fast) ease, box-shadow var(--anim-fast) ease;
+}
+
+.forecast-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.forecast-card .icon-box {
+  margin: 0 auto 10px;
+}
+
+.forecast-label {
+  display: block;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.forecast-value {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.forecast-value.positive {
+  color: var(--good);
+}
+
+.forecast-value.negative {
+  color: var(--danger);
+}
+
+/* Cost items */
+.cost-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.cost-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cost-label i {
+  color: var(--accent);
+  font-size: 13px;
+  width: 16px;
+  text-align: center;
+}
+
+.cost-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: right;
+}
+
+.cost-bar {
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.cost-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #047857);
+  border-radius: 4px;
+}
+
+.cost-chart-wrap {
+  margin-top: 20px;
+  height: 200px;
+  position: relative;
+}
+
+/* Performance badge */
+.badge-display {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.perf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.perf-badge.large {
+  font-size: 1.4rem;
+  padding: 16px 32px;
+}
+
+.perf-badge.excellente {
+  background: var(--accent-soft);
+  border: 2px solid var(--accent);
+  color: #047857;
+}
+
+.perf-badge.bonne {
+  background: #fffbeb;
+  border: 2px solid #f59e0b;
+  color: #d97706;
+}
+
+.perf-badge.moyenne {
+  background: #eff6ff;
+  border: 2px solid #3b82f6;
+  color: #1d4ed8;
+}
+
+.perf-badge.faible {
+  background: #fef2f2;
+  border: 2px solid #ef4444;
+  color: #dc2626;
+}
+
+.perf-badge.perte {
+  background: #fef2f2;
+  border: 2px solid #dc2626;
+  color: #991b1b;
+}
+
+/* Top cultures */
+.top-culture-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: transform var(--anim-fast) ease, box-shadow var(--anim-fast) ease;
+}
+
+.top-culture-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.rank-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.rank-1 { background: var(--accent-soft); color: var(--accent); }
+.rank-2 { background: #eef2ff; color: #6366f1; }
+.rank-3 { background: #fef2f2; color: #ef4444; }
+
+.culture-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.culture-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.culture-benefice {
+  font-size: 0.85rem;
+  color: var(--good);
+  font-weight: 600;
+}
+
+.culture-ca {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* AI Recommendations */
+.ai-recommendations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ai-recommendation-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border: 1px solid rgba(15,23,42,0.06);
+  border-radius: 10px;
+  transition: all var(--anim-fast) ease;
+}
+
+.ai-recommendation-item:hover {
+  background: #f1f5f9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+.ai-recommendation-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-soft);
+  color: var(--accent);
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+.ai-recommendation-icon i {
+  font-size: 14px;
+  color: var(--accent);
+}
+
+.ai-recommendation-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.re-download-btn {
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
+.no-history,
+.no-data {
+  text-align: center;
+  color: var(--muted);
+  padding: 20px;
+}
+
+/* ============================================
+   CARDS DE PROJECTION FINANCIÈRE - STYLE DASHBOARD BI
+   ============================================ */
+.projections-content {
+  margin-top: 8px;
+}
+
+.projections-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.projections-header h3 {
+  margin: 0;
+  font-size: var(--fs-section);
+  font-weight: var(--fw-black);
+  color: var(--text);
+}
+
+.projections-header .header-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 16px;
+}
+
+.projections-summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.projection-summary-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  text-align: center;
+  transition: transform var(--anim-fast) ease, box-shadow var(--anim-fast) ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.projection-summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.projection-summary-card .summary-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  margin: 0 auto 12px;
+  font-size: 18px;
+}
+
+.projection-summary-card .summary-icon.revenue {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.projection-summary-card .summary-icon.benefice {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.projection-summary-card .summary-icon.tendance-up {
+  background: var(--accent-soft);
+  color: var(--good);
+}
+
+.projection-summary-card .summary-icon.tendance-down {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+}
+
+.projection-summary-label {
+  display: block;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.projection-summary-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: var(--fw-black);
+  color: #000000;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.projections-monthly-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.projection-monthly-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  transition: transform var(--anim-fast) ease, box-shadow var(--anim-fast) ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.projection-monthly-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.projection-monthly-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--accent);
+}
+
+.projection-monthly-card.upcoming::before {
+  background: var(--accent);
+}
+
+.projection-monthly-card.past::before {
+  background: #3b82f6;
+}
+
+.projection-month-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.projection-month-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+
+.projection-month-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 14px;
+}
+
+.projection-financial-details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.projection-financial-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 10px;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  transition: all var(--anim-fast) ease;
+}
+
+.projection-monthly-card:hover .projection-financial-item {
+  background: rgba(241, 245, 249, 0.9);
+}
+
+.projection-financial-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.projection-financial-label i {
+  font-size: 14px;
+  width: 18px;
+  color: var(--accent);
+}
+
+.projection-financial-amount {
+  font-size: 1.25rem;
+  font-weight: var(--fw-bold);
+  color: #000000;
+  letter-spacing: -0.01em;
+}
+
+.projection-trend-indicator {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border);
+}
+
+.projection-trend-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: var(--fw-semibold);
+  transition: all var(--anim-fast) ease;
+}
+
+.projection-trend-badge.up {
+  background: var(--accent-soft);
+  color: var(--good);
+}
+
+.projection-trend-badge.down {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--danger);
+}
+
+.projection-trend-badge i {
+  font-size: 13px;
+}
+
+/* ============================================
+   COMPARISON CARDS - STYLE DASHBOARD BI
+   ============================================ */
+.comparison-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  transition: transform var(--anim-fast) ease, box-shadow var(--anim-fast) ease;
+}
+
+.comparison-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.comparison-card h3 {
+  margin: 0 0 16px 0;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.comparison-values {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.comparison-values > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.comparison-label {
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.comparison-value {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: #000000;
+}
+
+.comparison-var {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.comparison-var.positive {
+  background: var(--accent-soft);
+  color: var(--good);
+}
+
+.comparison-var.negative {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--danger);
+}
+
+@media (max-width: 768px) {
+  .projections-summary-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .projections-monthly-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .projection-summary-card {
+    padding: 16px;
+  }
+  
+  .projection-summary-value {
+    font-size: 1.25rem;
+  }
+  
+  .projection-monthly-card {
+    padding: 20px;
+  }
+  
+  .projection-financial-amount {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .projections-summary-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .projection-summary-value {
+    font-size: 1.4rem;
+  }
+}
+  .calc-grid-3,
+  .calc-grid-4,
+  .calc-results {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   SECTIONS RENTABILITÉ SeneBI — dark mode
+   Styles gérés par les variables CSS du bloc light ci-dessus.
+   Seuls les media queries responsive sont conservés ci-dessous.
+   ============================================ */
+
+@media (max-width: 768px) {
+.projections-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.projections-header h3 {
+  margin: 0;
+  font-size: var(--fs-section);
+  font-weight: var(--fw-black);
+  color: var(--text);
+}
+
+.projections-header .header-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 16px;
+}
+
+.projections-summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.projection-summary-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  text-align: center;
+  transition: transform var(--anim-fast) ease, box-shadow var(--anim-fast) ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.projection-summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.projection-summary-card .summary-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  margin: 0 auto 12px;
+  font-size: 18px;
+}
+
+.projection-summary-card .summary-icon.revenue {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.projection-summary-card .summary-icon.benefice {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}
+
+.projection-summary-card .summary-icon.tendance-up {
+  background: var(--accent-soft);
+  color: var(--good);
+}
+
+.projection-summary-card .summary-icon.tendance-down {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+}
+
+.projection-summary-label {
+  display: block;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.projection-summary-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: var(--fw-black);
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.projection-summary-value.positive {
+  color: var(--good);
+}
+
+.projection-summary-value.negative {
+  color: var(--danger);
+}
+
+.projection-summary-value.positive .summary-icon {
+  background: var(--accent-soft);
+  color: var(--good);
+}
+
+.projection-summary-value .trend-arrow {
+  margin-right: 4px;
+}
+
+.projections-monthly-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.projection-monthly-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  transition: transform var(--anim-fast) ease, box-shadow var(--anim-fast) ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.projection-monthly-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.projection-monthly-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--accent);
+}
+
+.projection-monthly-card.upcoming::before {
+  background: var(--accent);
+}
+
+.projection-monthly-card.past::before {
+  background: #3b82f6;
+}
+
+.projection-month-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.projection-month-title {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+
+.projection-month-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 14px;
+}
+
+.projection-financial-details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.projection-financial-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 10px;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  transition: all var(--anim-fast) ease;
+}
+
+.projection-monthly-card:hover .projection-financial-item {
+  background: rgba(241, 245, 249, 0.9);
+}
+
+.projection-financial-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.projection-financial-label i {
+  font-size: 14px;
+  width: 18px;
+  color: var(--accent);
+}
+
+.projection-financial-amount {
+  font-size: 1.25rem;
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.projection-financial-amount.revenue {
+  color: var(--good);
+}
+
+.projection-financial-amount.benefice-positive {
+  color: var(--good);
+}
+
+.projection-financial-amount.benefice-negative {
+  color: var(--danger);
+}
+
+.projection-trend-indicator {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border);
+}
+
+.projection-trend-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: var(--fw-semibold);
+  transition: all var(--anim-fast) ease;
+}
+
+.projection-trend-badge.up {
+  background: var(--accent-soft);
+  color: var(--good);
+}
+
+.projection-trend-badge.down {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--danger);
+}
+
+.projection-trend-badge i {
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .projections-summary-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .projections-monthly-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .projection-summary-card {
+    padding: 16px;
+  }
+  
+  .projection-summary-value {
+    font-size: 1.25rem;
+  }
+  
+  .projection-monthly-card {
+    padding: 20px;
+  }
+  
+  .projection-financial-amount {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .projections-summary-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .projection-summary-value {
+    font-size: 1.4rem;
   }
 }
 

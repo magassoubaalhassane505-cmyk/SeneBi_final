@@ -10,7 +10,7 @@
     const isDashboard = currentPage === 'dashboard.html';
     const isSupervision = currentPage === 'supervision.html';
     const isVisits = currentPage === 'visits-control.html';
-    const isCatalogue = currentPage === 'catalogue.html';
+    const isAnalysesBi = currentPage === 'analyses-bi.html';
     const isSecurePortal = currentPage === 'secure-portal.html';
     const isCompte = currentPage === 'compte.html';
 
@@ -40,13 +40,13 @@
                 </svg>
                 <span>Visites</span>
               </a>
-              <a href="${base}/pages/catalogue.html" class="${isCatalogue ? 'active' : ''}">
+              <a href="${base}/pages/analyses-bi.html" class="${isAnalysesBi ? 'active' : ''}}">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
                   <path d="M12 22V8"/>
                   <path d="M4.93 4.93L12 12l7.07-7.07"/>
                 </svg>
-                <span>Catalogue</span>
+                <span>Analyses BI</span>
               </a>
     `;
 

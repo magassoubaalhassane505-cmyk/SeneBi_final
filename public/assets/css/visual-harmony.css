@@ -1,0 +1,243 @@
+/* SeneBI - Visual Harmony Layer */
+/* Subtle background effects inspired by public interface */
+/* Does not modify existing styles - only adds atmospheric elements */
+
+:root {
+  --senebi-fade-accent: rgba(5, 150, 105, 0.03);
+  --senebi-fade-accent-strong: rgba(5, 150, 105, 0.06);
+  --senebi-fade-blue: rgba(59, 130, 246, 0.03);
+  --senebi-fade-purple: rgba(139, 92, 246, 0.03);
+  --senebi-fade-amber: rgba(245, 158, 11, 0.03);
+}
+
+/* Subtle background grid pattern - creates depth without distraction */
+body[data-page="client-dashboard"] .app,
+body[data-page="parcels"] .app,
+body[data-page="manager-dashboard"] .app,
+body[data-page="stocks"] .app,
+body[data-page="supervision"] .app,
+body[data-page="business"] .app {
+  background-image: 
+    radial-gradient(circle at 100% 0%, var(--senebi-fade-accent-strong) 0%, transparent 35%),
+    radial-gradient(circle at 0% 100%, var(--senebi-fade-blue) 0%, transparent 35%);
+  background-attachment: fixed;
+}
+
+/* Subtle animated orbs - inspired by public hero section */
+body[data-page="client-dashboard"]::before,
+body[data-page="parcels"]::before,
+body[data-page="manager-dashboard"]::before,
+body[data-page="stocks"]::before,
+body[data-page="supervision"]::before,
+body[data-page="business"]::before {
+  content: '';
+  position: fixed;
+  top: -100px;
+  right: -100px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--senebi-fade-accent-strong), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: senebiOrbFloat 20s ease-in-out infinite;
+}
+
+body[data-page="parcels"]::before {
+  top: 40%;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, var(--senebi-fade-accent), transparent 80%);
+}
+
+body[data-page="stocks"]::before {
+  top: 60%;
+  left: -100px;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, var(--senebi-fade-purple), transparent 70%);
+}
+
+body[data-page="business"]::before {
+  top: 30%;
+  left: -80px;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, var(--senebi-fade-amber), transparent 75%);
+}
+
+@keyframes senebiOrbFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(-20px, 20px) scale(1.05);
+  }
+  66% {
+    transform: translate(20px, -30px) scale(0.98);
+  }
+}
+
+/* Enhanced card background with subtle gradient - matches public section style */
+.card--enhanced-bg {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.98) 0%, 
+    rgba(248, 250, 252, 0.95) 100%);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+/* Weather widget - harmonized with public gradient style */
+.weather-widget--harmony {
+  background: linear-gradient(135deg, 
+    rgba(240, 253, 244, 0.8) 0%, 
+    rgba(220, 252, 231, 0.6) 100%);
+  border: 1px solid rgba(187, 247, 208, 0.8);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.08);
+}
+
+/* Section headers - subtle icon box styling like public platform cards */
+.section-header--icon {
+  position: relative;
+  padding-left: 44px;
+}
+
+.section-header--icon::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* KPI cards with subtle ambient background */
+.kpi-card--ambient {
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card--ambient::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--senebi-fade-accent), transparent 70%);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Form sections with subtle border glow */
+.form-section--glow {
+  border: 1px solid rgba(5, 150, 105, 0.12);
+  box-shadow: 0 4px 25px rgba(5, 150, 105, 0.04);
+}
+
+/* Table header with public-style gradient */
+.table-header--gradient {
+  background: linear-gradient(135deg, 
+    rgba(248, 250, 252, 0.9) 0%, 
+    rgba(241, 245, 249, 0.7) 100%);
+  border-bottom: 2px solid rgba(226, 232, 240, 0.8);
+}
+
+/* Chart containers with subtle ambient */
+.chart-container--ambient {
+  background: linear-gradient(135deg, 
+    rgba(248, 249, 250, 0.8) 0%, 
+    rgba(241, 245, 249, 0.6) 100%);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+}
+
+/* Notification cards with subtle unread indicator */
+.notification-card--ambient.unread {
+  background: linear-gradient(135deg, 
+    rgba(240, 253, 244, 0.6) 0%, 
+    rgba(255, 255, 255, 0.9) 100%);
+  border-left: 3px solid var(--accent);
+}
+
+/* Dashboard insight banner - subtle gradient from public */
+.dashboard-insight--harmony {
+  background: linear-gradient(135deg, 
+    rgba(220, 252, 231, 0.4) 0%, 
+    rgba(241, 245, 249, 0.7) 100%);
+  border: 1px solid rgba(5, 150, 105, 0.15);
+}
+
+/* Alert banner with subtle background */
+.alert-banner--harmony {
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* Page transitions for smooth navigation */
+.senebi-page-transition {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: senebiFadeInUp 0.4s ease forwards;
+}
+
+.senebi-page-transition:nth-of-type(1) { animation-delay: 0ms; }
+.senebi-page-transition:nth-of-type(2) { animation-delay: 50ms; }
+.senebi-page-transition:nth-of-type(3) { animation-delay: 100ms; }
+.senebi-page-transition:nth-of-type(4) { animation-delay: 150ms; }
+
+@keyframes senebiFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Empty state styling - inspired by public */
+.empty-state--harmony {
+  background: rgba(248, 250, 252, 0.5);
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+}
+
+.empty-state--harmony i {
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  body[data-page="client-dashboard"]::before,
+  body[data-page="parcels"]::before,
+  body[data-page="manager-dashboard"]::before,
+  body[data-page="stocks"]::before,
+  body[data-page="supervision"]::before,
+  body[data-page="business"]::before {
+    width: 150px;
+    height: 150px;
+    top: 20px;
+    right: -30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-page="client-dashboard"]::before,
+  body[data-page="parcels"]::before,
+  body[data-page="manager-dashboard"]::before,
+  body[data-page="stocks"]::before,
+  body[data-page="supervision"]::before,
+  body[data-page="business"]::before {
+    animation: none;
+  }
+}

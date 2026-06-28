@@ -1597,8 +1597,63 @@ select:focus, input:focus{
 
 @media (max-width: 640px){
   .brand-title span{ display: none; }
-  .auth-pills{ flex-wrap: wrap; justify-content: flex-end; max-width: 100%; }
+   .auth-pills{ flex-wrap: wrap; justify-content: flex-end; max-width: 100%; }
 }
+
+/* ============================================================
+   UNIFIED ICON BOX — Harmonisé avec l'interface publique
+   Structure public : .solution-icon (56×56, accent-soft, sans bordure)
+   Adapté pour les dashboards privés.
+   ============================================================ */
+.icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 20px;
+  flex-shrink: 0;
+  transition: transform var(--anim-fast) ease, box-shadow var(--anim-fast) ease;
+}
+.icon-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.22);
+}
+.icon-box i,
+.icon-box svg {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 1;
+  opacity: 1;
+}
+
+/* Variante compacte pour zones denses */
+.icon-box-sm {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  font-size: 15px;
+}
+.icon-box-sm i,
+.icon-box-sm svg {
+  font-size: 15px;
+}
+
+/* Variantes sémantiques — même style, autre teinte */
+.icon-box.red    { background: #fef2f2; color: #ef4444; }
+.icon-box.blue   { background: #eff6ff; color: #3b82f6; }
+.icon-box.indigo { background: #eef2ff; color: #6366f1; }
+.icon-box.green  { background: #f0fdf4; color: #10b981; }
+.icon-box.amber  { background: #fffbeb; color: #f59e0b; }
+.icon-box.purple { background: #f5f3ff; color: #8b5cf6; }
+
+/* ============================================================
+   FIN UNIFIED ICON BOX
+   ============================================================ */
 
 /* Cloche de notification */
 .notification-bell {

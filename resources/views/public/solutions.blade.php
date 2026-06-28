@@ -105,10 +105,10 @@
             </article>
             <article class="solution-card">
               <div class="solution-icon">
-                <i class="fas fa-book"></i>
+                <i class="fas fa-chart-pie"></i>
               </div>
-              <h3>Catalogue des intrants</h3>
-              <p>Gérez la base de données des semences, engrais et produits nécessaires aux cultures.</p>
+              <h3>Analyses BI</h3>
+              <p>Analysez les données de vos cultures avec des rapports détaillés et des indicateurs de performance.</p>
             </article>
             <article class="solution-card">
               <div class="solution-icon">

@@ -220,8 +220,8 @@
           <article class="card">
             <div class="card-header">
               <div>
-                <h3 style="margin:0; font-size:16px;">Catalogue des intrants</h3>
-                <div class="small muted">Gestion produits</div>
+                <h3 style="margin:0; font-size:16px;">Analyses BI</h3>
+                <div class="small muted">Analyses avancées</div>
               </div>
               <div class="card-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -232,7 +232,7 @@
               </div>
             </div>
             <div style="margin-top:12px;">
-              <p style="font-size:13px; color:var(--muted); margin:0;">Gérez les prix et types de produits agricoles (engrais, semences).</p>
+              <p style="font-size:13px; color:var(--muted); margin:0;">Analysez les données agricoles avec rapports détaillés et indicateurs de performance intelligents.</p>
             </div>
           </article>
 

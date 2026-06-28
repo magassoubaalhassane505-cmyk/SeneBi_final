@@ -6,7 +6,9 @@
     <title>SeneBI — Dashboard</title>
     <link rel="stylesheet" href="{{ asset('assets/css/base.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/visual-harmony.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/region-filter.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     
     <!-- Styles pour les sections restaurées du portail manager -->
     <style>
@@ -202,7 +204,7 @@
     @include('header-manager')
 
       <main class="container">
-        <div class="page-title">
+        <div class="page-title senebi-page-transition">
           <div>
             <h1>Tableau de Bord Analytique</h1>
             <p>Vue d'ensemble des performances agricoles, avec analyse des tendances et alertes opérationnelles.</p>
@@ -234,9 +236,7 @@
             <div class="card-header">
               <p class="card-title">Total Récolté</p>
               <div class="card-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 2v20"/><path d="M7 6c2 2 2 4 0 6"/><path d="M17 6c-2 2-2 4 0 6"/><path d="M7 12c2 2 2 4 0 6"/><path d="M17 12c-2 2-2 4 0 6"/>
-                </svg>
+                <i class="fas fa-seedling"></i>
               </div>
             </div>
             <div class="kpi-value"><span id="total-production">0</span> <span class="muted" style="font-size:14px;font-weight:700;">kg</span></div>
@@ -250,9 +250,7 @@
             <div class="card-header">
               <p class="card-title">Chiffre d'Affaires estimé</p>
               <div class="card-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/><path d="M12 7v10"/><path d="M9.5 9.5c.6-1 4.4-1 5 0"/><path d="M9.5 14.5c.6 1 4.4 1 5 0"/>
-                </svg>
+                <i class="fas fa-chart-line"></i>
               </div>
             </div>
             <div class="kpi-value"><span id="ca-estime">0</span> <span class="muted" style="font-size:14px;font-weight:700;">M FCFA</span></div>
@@ -266,9 +264,7 @@
             <div class="card-header">
               <p class="card-title">Hectares Actifs</p>
               <div class="card-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 21s7-4.5 7-11a7 7 0 0 0-14 0c0 6.5 7 11 7 11z"/><path d="M12 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
-                </svg>
+                <i class="fas fa-map"></i>
               </div>
             </div>
             <div class="kpi-value"><span id="kpiHa">0</span> <span class="muted" style="font-size:14px;font-weight:700;">ha</span></div>
@@ -283,12 +279,7 @@
             <div class="card-header">
               <p class="card-title">Agriculteurs Actifs</p>
               <div class="card-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                  <circle cx="9" cy="7" r="4"/>
-                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                </svg>
+                <i class="fas fa-users"></i>
               </div>
             </div>
             <div class="kpi-value"><span id="nombre-agriculteurs">0</span> <span class="muted" style="font-size:14px;font-weight:700;">actifs</span></div>
@@ -301,7 +292,7 @@
 
         <div class="weather-widget">
             <div class="weather-content">
-                <div class="weather-icon">☀️</div>
+                <div class="weather-icon"><i class="fas fa-sun"></i></div>
                 <div class="weather-info">
                     <div class="weather-location">Bamako</div>
                     <div class="weather-temp">35°C</div>
@@ -314,10 +305,10 @@
 
         <!-- Section 1 : Cartographie -->
         <section class="dashboard-layout">
-          <article class="card map-card">
+          <article class="card">
             <div class="card-header">
               <div>
-                <h3 style="margin:0; font-size:16px;">Cartographie des Récoltes</h3>
+                <h3 style="margin:0; font-size:16px;"><i class="fas fa-map-marked-alt"></i> Cartographie des Récoltes</h3>
                 <div class="small muted">Vue stratégique des zones agricoles</div>
               </div>
             </div>
@@ -371,7 +362,7 @@
             <article class="card">
               <div class="card-header">
                 <div>
-                  <h3 style="margin:0; font-size:16px;">Production Totale par Culture</h3>
+                  <h3 style="margin:0; font-size:16px;"><i class="fas fa-chart-bar"></i> Production Totale par Culture</h3>
                   <div class="small muted">Riz vs Maïs vs Coton</div>
                 </div>
                 <span class="tag good">Tonnes</span>
@@ -384,7 +375,7 @@
             <article class="card">
               <div class="card-header">
                 <div>
-                  <h3 style="margin:0; font-size:16px;">Répartition des Alertes</h3>
+                  <h3 style="margin:0; font-size:16px;"><i class="fas fa-exclamation-triangle"></i> Répartition des Alertes</h3>
                   <div class="small muted">Causes principales</div>
                 </div>
                 <span class="tag danger">Alertes</span>
@@ -401,7 +392,7 @@
           <article class="card">
             <div class="card-header">
               <div>
-                <h3 style="margin:0; font-size:16px;">🏆 Top Performance</h3>
+                <h3 style="margin:0; font-size:16px;"><i class="fas fa-trophy"></i> Top Performance</h3>
                 <div class="small muted">Les 3 meilleurs rendements ce mois-ci</div>
               </div>
               <span class="tag good">Elite</span>
@@ -435,8 +426,8 @@
               @endphp
               <div class="card-header">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                  <div style="width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #eff6ff; border: 1px solid #dbeafe;">
-                    <i class="fas fa-list-check" style="font-size: 14px; color: #1e40af;"></i>
+                  <div class="icon-box-sm icon-box blue" style="display: inline-flex;">
+                    <i class="fas fa-list-check"></i>
                   </div>
                   <div>
                     <h3 style="margin:0; font-size:16px; font-weight: 700; color: #111827;">Activites Recentes</h3>
@@ -472,8 +463,8 @@
                      onmouseout="this.style.transform=''; this.style.boxShadow='';">
               <div class="card-header">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                  <div style="width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #fffbeb; border: 1px solid #fef3c7;">
-                    <i class="fas fa-robot" style="font-size: 14px; color: #92400e;"></i>
+                  <div class="icon-box-sm icon-box amber" style="display: inline-flex;">
+                    <i class="fas fa-robot"></i>
                   </div>
                   <div>
                     <h3 style="margin:0; font-size:16px; font-weight: 700; color: #111827;">Conseils SeneBI</h3>
@@ -510,9 +501,9 @@ Tous les indicateurs sont bons.
            <article class="card" style="display: flex; flex-direction: column; border-top: 3px solid #ef4444;">
              <div class="card-header">
                <div style="display: flex; align-items: center; gap: 12px;">
-                 <div style="width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #fef2f2; border: 1px solid #fecaca;">
-                   <i class="fas fa-exclamation-triangle" style="font-size: 14px; color: #991b1b;"></i>
-                 </div>
+                  <div class="icon-box-sm icon-box red" style="display: inline-flex;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                  </div>
                  <div>
                    <h3 style="margin:0; font-size:16px; font-weight: 700; color: #111827;">Agriculteurs à Risque</h3>
                    <div class="small muted">Nécessitent une attention particulière</div>

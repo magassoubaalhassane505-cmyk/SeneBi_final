@@ -27,6 +27,18 @@
         performanceClass: stat.badgeClass || null,
         plantingDate: null,
         region: p.region,
+        rendement: stat.rendement || 0,
+        recoltesCount: stat.recoltesCount || 0,
+        intrantsCount: stat.intrantsCount || 0,
+        visitesCount: stat.visitesCount || 0,
+        cultureDuration: stat.cultureDuration || 0,
+        productionEstimee: stat.productionEstimee || 0,
+        latitude: stat.latitude || null,
+        longitude: stat.longitude || null,
+        last_irrigation: stat.last_irrigation || null,
+        last_traitement: stat.last_traitement || null,
+        next_intervention: stat.next_intervention || null,
+        photos: stat.photos || [],
       };
     });
   };

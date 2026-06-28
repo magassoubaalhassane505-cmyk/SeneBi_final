@@ -6,7 +6,9 @@
     <title>SeneBI — Parcelles</title>
     <link rel="stylesheet" href="{{ asset('assets/css/base.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/parcelles.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/visual-harmony.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/region-filter.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     
     <!-- CSS pour Widget Météo -->
     <style>
@@ -221,12 +223,14 @@
      @include('header-client')  
 
       <main class="container">
-        <div class="page-hero">
+        <div class="page-hero senebi-page-transition">
           <div>
             <h1 class="hero-title">Gestion des Parcelles & Récoltes</h1>
             <p class="hero-subtitle">Suivi de la production et des rendements</p>
             <p class="weather-advice" id="weatherAdvice">
-              <span class="advice-icon">💡</span>
+              <div class="icon-box-sm icon-box green" style="display: inline-flex; margin-right: 8px; vertical-align: middle;">
+                <i class="fas fa-lightbulb"></i>
+              </div>
               <span>Conseil du jour : C'est le moment idéal pour l'arrosage de la Parcelle Nord.</span>
             </p>
           </div>
@@ -251,7 +255,9 @@
             <!-- Widget Météo Dynamique -->
             <div class="weather-widget" id="weatherWidget">
               <div class="weather-content">
-                <span class="weather-icon">☀️</span>
+                <div class="icon-box-sm icon-box amber" style="margin-right: 8px;">
+                  <i class="fas fa-sun"></i>
+                </div>
                 <span class="weather-text">Météo Bamako : 34°C - Ensoleillé</span>
               </div>
             </div>

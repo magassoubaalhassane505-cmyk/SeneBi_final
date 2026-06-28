@@ -6,13 +6,15 @@
     <title>Supervision - SeneBI</title>
     <link rel="stylesheet" href="{{ asset('assets/css/base.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/visual-harmony.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   </head>
   <body data-page="supervision">
     <div class="app">
       @include('header-manager')
 
       <main class="container">
-        <div class="page-title">
+        <div class="page-title senebi-page-transition">
           <div>
             <h1>Supervision</h1>
             <p>Surveillance des parcelles et alertes en temps réel</p>
@@ -24,9 +26,7 @@
             <div class="card-header">
               <p class="card-title">Utilisateurs Actifs</p>
               <div class="card-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                </svg>
+                <i class="fas fa-users"></i>
               </div>
             </div>
             <div class="kpi-value"><span id="activeUsers">0</span></div>
@@ -40,9 +40,7 @@
             <div class="card-header">
               <p class="card-title">Activités du Jour</p>
               <div class="card-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/>
-                </svg>
+                <i class="fas fa-calendar-day"></i>
               </div>
             </div>
             <div class="kpi-value"><span id="dailyActivities">0</span></div>
@@ -56,9 +54,7 @@
             <div class="card-header">
               <p class="card-title">Alertes Système</p>
               <div class="card-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/>
-                </svg>
+                <i class="fas fa-bell"></i>
               </div>
             </div>
             <div class="kpi-value"><span id="systemAlerts">0</span></div>
@@ -72,9 +68,7 @@
             <div class="card-header">
               <p class="card-title">Performance</p>
               <div class="card-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 17l6-6 4 4 7-7"/><path d="M14 8h6v6"/>
-                </svg>
+                <i class="fas fa-chart-line"></i>
               </div>
             </div>
             <div class="kpi-value"><span id="performanceScore">98</span>%</div>
@@ -95,7 +89,7 @@
           <article class="card">
             <div class="card-header">
               <div>
-                <h3 style="margin:0; font-size:16px; color: #1f2937; font-weight: 600;">Nouvelles demandes d'inscription</h3>
+                <h3 style="margin:0; font-size:16px; color: #1f2937; font-weight: 600;"><i class="fas fa-user-plus"></i> Nouvelles demandes d'inscription</h3>
                 <div class="small muted" style="font-size: 13px; margin-top: 4px;">Clients en attente de validation</div>
               </div>
               @if ($pendingClients->count() > 0)
@@ -277,8 +271,8 @@
 
           <!-- Section Analyse SeneBI -->
           <div id="modalAnalysisSection" style="margin-bottom: 20px; padding: 14px 18px; background: linear-gradient(90deg, #f8fafc, #f1f5f9); border: 1px solid #e2e8f0; border-radius: 12px; display: flex; align-items: flex-start; gap: 12px;">
-            <div style="width: 32px; height: 32px; border-radius: 10px; background: #10b981; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 10px rgba(16,185,129,0.25);">
-              <i class="fas fa-robot" style="color: #fff; font-size: 14px;"></i>
+            <div class="icon-box-sm icon-box green" style="display: inline-flex;">
+              <i class="fas fa-robot"></i>
             </div>
             <div>
               <div style="font-size: 12px; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Analyse SeneBI</div>

@@ -817,12 +817,12 @@
   pointer-events: none;
 }
 
-/* Catalogue table specific styling */
-.catalogue-table th {
+/* Analyses BI table specific styling */
+.analyses-bi-table th {
   background: rgba(248, 250, 252, 0.8);
 }
 
-.catalogue-table tbody tr:hover {
+.analyses-bi-table tbody tr:hover {
   background: rgba(59, 130, 246, 0.05);
 }
 

@@ -6,6 +6,7 @@
     <title>Notifications - SeneBI Manager</title>
     <link rel="stylesheet" href="{{ asset('assets/css/base.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/dashboard.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/visual-harmony.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
       .notif-page-grid {
@@ -59,6 +60,13 @@
         text-align: center;
         font-size: 13px;
       }
+      .notif-filter-btn .icon-box,
+      .notif-filter-btn .icon-box i,
+      .notif-filter-btn .icon-box svg {
+        font-size: inherit;
+        width: auto;
+        height: auto;
+      }
       .notif-main {
         background: #fff;
         border: 1px solid rgba(15,23,42,0.08);
@@ -92,6 +100,18 @@
       }
       .notif-search i {
         color: #9ca3af;
+        font-size: 13px;
+      }
+      .notif-search .icon-box-sm {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        font-size: 13px;
+        margin-right: 4px;
+        flex-shrink: 0;
+      }
+      .notif-search .icon-box-sm i,
+      .notif-search .icon-box-sm svg {
         font-size: 13px;
       }
       .notif-search input {
@@ -220,9 +240,9 @@
   <body data-page="manager-notifications">
     @include('header-manager')
 
-    <main class="container">
-      <div class="page-title">
-        <div>
+<main class="container">
+       <div class="page-title senebi-page-transition">
+         <div>
           <h1>Notifications</h1>
           <p>Gérez toutes vos notifications en un seul endroit</p>
         </div>
@@ -235,11 +255,11 @@
         <aside class="notif-sidebar">
           <h3>Filtres</h3>
           <div style="display:flex; flex-direction:column; gap:4px;">
-            <button class="notif-filter-btn active" data-filter="all"><i class="fas fa-layer-group"></i> Toutes</button>
-            <button class="notif-filter-btn" data-filter="stock"><i class="fas fa-boxes"></i> Stocks</button>
-            <button class="notif-filter-btn" data-filter="parcelle"><i class="fas fa-map-marked-alt"></i> Parcelles</button>
-            <button class="notif-filter-btn" data-filter="visite"><i class="fas fa-calendar-check"></i> Visites</button>
-            <button class="notif-filter-btn" data-filter="system"><i class="fas fa-cog"></i> Système</button>
+            <button class="notif-filter-btn active" data-filter="all"><div class="icon-box-sm icon-box" style="display:inline-flex; margin-right: 6px;"><i class="fas fa-layer-group"></i></div> Toutes</button>
+            <button class="notif-filter-btn" data-filter="stock"><div class="icon-box-sm icon-box" style="display:inline-flex; margin-right: 6px;"><i class="fas fa-boxes"></i></div> Stocks</button>
+            <button class="notif-filter-btn" data-filter="parcelle"><div class="icon-box-sm icon-box" style="display:inline-flex; margin-right: 6px;"><i class="fas fa-map-marked-alt"></i></div> Parcelles</button>
+            <button class="notif-filter-btn" data-filter="visite"><div class="icon-box-sm icon-box" style="display:inline-flex; margin-right: 6px;"><i class="fas fa-calendar-check"></i></div> Visites</button>
+            <button class="notif-filter-btn" data-filter="system"><div class="icon-box-sm icon-box" style="display:inline-flex; margin-right: 6px;"><i class="fas fa-cog"></i></div> Système</button>
           </div>
         </aside>
 
@@ -247,7 +267,7 @@
           <div class="notif-main-header">
             <h2>Toutes les notifications</h2>
             <div class="notif-search">
-              <i class="fas fa-search"></i>
+              <div class="icon-box-sm icon-box" style="display:inline-flex; margin-right:4px;"><i class="fas fa-search"></i></div>
               <input type="text" id="searchNotifications" placeholder="Rechercher..." />
             </div>
           </div>

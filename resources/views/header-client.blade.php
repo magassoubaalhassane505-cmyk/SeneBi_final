@@ -1,5 +1,6 @@
 <header class="topbar">
-  @php($u = auth()->user())
+   <meta name="csrf-token" content="{{ csrf_token() }}">
+   @php($u = auth()->user())
   <script>
     window.__SENEBI_AUTH__ = {{ \Illuminate\Support\Js::from([
       'id' => optional($u)->id,

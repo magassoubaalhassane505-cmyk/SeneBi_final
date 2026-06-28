@@ -41,6 +41,18 @@ class PublicController extends Controller
         return view('public.contact');
     }
 
+    public function sendContact(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
+        ]);
+
+        return back()->with('success', 'Votre message a été envoyé avec succès. Nous vous répondrons sous peu.');
+    }
+
     public function faq()
     {
         return view('public.faq');

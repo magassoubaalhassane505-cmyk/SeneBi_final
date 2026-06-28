@@ -6,6 +6,7 @@
     <title>SeneBI — Mon compte Client</title>
     <link rel="stylesheet" href="{{ asset('assets/css/base.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/compte.css') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   </head>
   <body data-page="compte-client" data-server-side="1">
     <div class="app">
@@ -22,9 +23,9 @@
         <div class="compte-grid">
           <section class="card compte-card compte-card--profile">
             <div class="compte-card-head">
-              <div class="compte-avatar" id="profileAvatar" aria-hidden="true">?</div>
+              <div class="compte-avatar" id="profileAvatar" aria-hidden="true"><i class="fas fa-user"></i></div>
               <div>
-                <h2>Profil Client</h2>
+                <h2><i class="fas fa-user"></i> Profil Client</h2>
                 <p class="compte-card-sub">Vos informations et votre rôle d'agriculteur.</p>
               </div>
             </div>
@@ -37,7 +38,7 @@
           </section>
 
           <section class="card compte-card">
-            <h2>Sécurité</h2>
+            <h2><i class="fas fa-lock"></i> Sécurité</h2>
             <p class="compte-card-sub">Changer votre mot de passe (stockage local de démo).</p>
             <form class="compte-form" id="passwordForm" novalidate>
               <div class="compte-field">
@@ -58,7 +59,7 @@
           </section>
 
           <section class="card compte-card compte-card--wide">
-            <h2>Sauvegarde des données</h2>
+            <h2><i class="fas fa-database"></i> Sauvegarde des données</h2>
             <p class="compte-card-sub">Exportez vos données en fichier JSON, puis restaurez-les si besoin.</p>
             <div class="backup-actions">
               <button class="compte-submit-btn compte-submit-btn--secondary" type="button" id="exportDataBtn">Exporter mes données</button>

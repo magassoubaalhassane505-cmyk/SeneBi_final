@@ -18,6 +18,7 @@ Route::redirect('/services', '/solutions', 301);
 Route::redirect('/business-intelligence', '/solutions', 301);
 Route::get('/a-propos', [PublicController::class, 'about'])->name('public.about');
 Route::get('/contact', [PublicController::class, 'contact'])->name('public.contact');
+Route::post('/contact', [PublicController::class, 'sendContact'])->name('public.contact.send');
 Route::get('/faq', [PublicController::class, 'faq'])->name('public.faq');
 Route::get('/connexion', [PublicController::class, 'login'])->name('public.login');
 Route::get('/inscription', [PublicController::class, 'register'])->name('public.register');
@@ -125,6 +126,8 @@ Route::prefix('client')->middleware('auth')->group(function () {
         Route::delete('/notifications/{notification}', [ClientApiController::class, 'notificationsDestroy']);
         Route::post('/recoltes', [ClientApiController::class, 'storeHarvest']);
         Route::post('/rentabilites', [ClientApiController::class, 'storeRentabilite']);
+        Route::post('/objectifs', [ClientApiController::class, 'storeObjectifs'])->name('client.api.objectifs');
+        Route::post('/pdf-export', [ClientApiController::class, 'storePdfExport'])->name('client.api.pdf-export');
     })->middleware('auth');
 });
 

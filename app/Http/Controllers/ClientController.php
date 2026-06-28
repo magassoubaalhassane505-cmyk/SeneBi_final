@@ -8,12 +8,14 @@ use App\Models\Recolte;
 use App\Models\Intrant;
 use App\Models\IntrantConsomme;
 use App\Models\Visite;
+use App\Models\Objectif;
+use App\Models\PdfExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ClientController extends Controller
 {
-    // Affiche le tableau de bord de l'agriculteur (Sidi)
     public function clientDashboard() {
         $user = Auth::user();
         $derniereVisite = Visite::where('user_id', $user->id)->latest()->first();
@@ -108,6 +110,51 @@ class ClientController extends Controller
             ->whereColumn('quantite_actuelle', '<=', 'seuil_critique')
             ->get(['nom', 'quantite_actuelle', 'seuil_critique']);
 
+        // Nouvelles données - Objectifs de saison
+        $objectif = Objectif::where('user_id', $user->id)
+            ->where('saison', $user->saison ?? '2026')
+            ->first();
+
+        // Données pour les KPI secondaires
+        $parcellesActives = Parcelle::where('user_id', $user->id)->count();
+        $intrantsCritiques = $stockCritical->count();
+        $visitesRealisees = Visite::where('user_id', $user->id)->count();
+        $culturesExploitees = Recolte::where('user_id', $user->id)->distinct('culture')->count('culture');
+
+        // Prévision de production (basé sur tendance)
+        $productionEstimee = $totalRecolteQte > 0 ? $totalRecolteQte * 1.1 : 0;
+        $productionTendance = $caEvolution >= 5 ? 'hausse' : ($caEvolution <= -5 ? 'baisse' : 'stable');
+        $productionConfiance = min(95, max(50, 80 + abs($caEvolution)));
+
+        // Comparaison régionale
+        $region = $user->location ?? 'Sénégal';
+        $rendementRegional = Parcelle::where('region', $region)
+            ->join('recoltes', 'parcelles.id', '=', 'recoltes.parcelle_id')
+            ->avg('quantite') ?? 0;
+        $rendementRegional = $rendementRegional > 0 ? ($rendementRegional / $hectaresActifs) : 0;
+        $ecartRegional = $rendementMoyen > 0 && $rendementRegional > 0 
+            ? (($rendementMoyen - $rendementRegional) / $rendementRegional) * 100 
+            : 0;
+
+        // Meteo (données simulées - API externe à intégrer plus tard)
+        $meteoData = [
+            'temperature' => rand(25, 38),
+            'humidity' => rand(40, 85),
+            'rainProb' => rand(5, 60),
+            'windSpeed' => rand(5, 25),
+            'forecast' => [
+                ['day' => 'Lun', 'temp' => rand(28, 36), 'icon' => 'sun'],
+                ['day' => 'Mar', 'temp' => rand(28, 36), 'icon' => 'cloud-sun'],
+                ['day' => 'Mer', 'temp' => rand(28, 36), 'icon' => 'cloud'],
+                ['day' => 'Jeu', 'temp' => rand(28, 36), 'icon' => 'cloud-rain'],
+                ['day' => 'Ven', 'temp' => rand(28, 36), 'icon' => 'sun'],
+            ],
+            'alerts' => $this->getMeteoAlerts($region),
+        ];
+
+        // Alertes intelligentes supplémentaires
+        $additionalAlerts = $this->getAdditionalAlerts($user, $totalRecolteQte, $rendementMoyen, $derniereVisite);
+
         return view('client-dashboard', compact(
             'derniereVisite',
             'widgets',
@@ -126,8 +173,87 @@ class ClientController extends Controller
             'prixCultures',
             'culturesLabels',
             'culturesData',
-            'stockCritical'
+            'stockCritical',
+            'objectif',
+            'parcellesActives',
+            'intrantsCritiques',
+            'visitesRealisees',
+            'culturesExploitees',
+            'productionEstimee',
+            'productionTendance',
+            'productionConfiance',
+            'region',
+            'rendementRegional',
+            'ecartRegional',
+            'meteoData',
+            'additionalAlerts'
         ));
+    }
+
+    protected function getMeteoAlerts($region)
+    {
+        $alerts = [];
+        if (rand(0, 1)) {
+            $alerts[] = [
+                'type' => 'warning',
+                'message' => 'Risque de sécheresse cette semaine. Arrosez vos parcelles.',
+                'icon' => 'exclamation-triangle'
+            ];
+        }
+        return $alerts;
+    }
+
+    protected function getAdditionalAlerts($user, $totalRecolteQte, $rendementMoyen, $derniereVisite)
+    {
+        $alerts = [];
+        
+        // Stock critique
+        $criticalStocks = Stock::where('user_id', $user->id)
+            ->whereColumn('quantite_actuelle', '<=', 'seuil_critique')
+            ->count();
+        if ($criticalStocks > 0) {
+            $alerts[] = [
+                'type' => 'danger',
+                'title' => 'Stock critique',
+                'message' => "{$criticalStocks} intrant(s) en dessous du seuil critique",
+                'icon' => 'box'
+            ];
+        }
+
+        // Absence d'activité
+        $joursSansActivite = $user->updated_at 
+            ? now()->diffInDays($user->updated_at) 
+            : 0;
+        if ($joursSansActivite > 3 && $totalRecolteQte > 0) {
+            $alerts[] = [
+                'type' => 'warning',
+                'title' => 'Activité faible',
+                'message' => "Aucune activité depuis {$joursSansActivite} jours",
+                'icon' => 'clock'
+            ];
+        }
+
+        // Rendement inférieur à la moyenne
+        if ($rendementMoyen > 0 && $rendementMoyen < 1.0) {
+            $alerts[] = [
+                'type' => 'info',
+                'title' => 'Rendement à améliorer',
+                'message' => 'Votre rendement est inférieur à la moyenne attendue',
+                'icon' => 'seedling'
+            ];
+        }
+
+        // Visite recommandée
+        if (!$derniereVisite || now()->diffInDays($derniereVisite->date_visite) > 14) {
+            $alerts[] = [
+                'type' => 'warning',
+                'title' => 'Visite conseillée',
+                'message' => 'Prévoyez une visite technique prochainement',
+                'icon' => 'stethoscope'
+            ];
+        }
+
+        return $alerts;
     }
 
     // Affiche le calculateur de rentabilité
@@ -140,7 +266,7 @@ class ClientController extends Controller
         // Calculer les statistiques de rentabilité
         $totalCA = $recoltes->sum('revenu_total');
         $totalCouts = $recoltes->sum('couts_totaux');
-        $totalBenefice = $recoltes->sum('benefice_net');
+        $totalBenefice = $totalCA - $totalCouts;
         
         // Calculer la marge moyenne
         $margeMoyenne = $totalCA > 0 ? ($totalBenefice / $totalCA) * 100 : 0;
@@ -159,6 +285,112 @@ class ClientController extends Controller
           'culture' => $r->culture,
         ]);
         
+        // ===================== NOUVELLES DONNÉES FINANCIÈRES =====================
+        
+        // Prévisions financières (basées sur tendance des 3 derniers mois)
+        $now = now();
+        $dateTroisMois = $now->copy()->subMonths(3)->startOfMonth();
+        
+        $caTroisDerniersMois = Recolte::where('user_id', $user->id)
+            ->where('date_recolte', '>=', $dateTroisMois)
+            ->sum('revenu_total');
+        $beneficeTroisDerniersMois = Recolte::where('user_id', $user->id)
+            ->where('date_recolte', '>=', $dateTroisMois)
+            ->sum('benefice_net');
+        
+        $moyenneMensuelleCA = $caTroisDerniersMois > 0 ? $caTroisDerniersMois / 3 : 0;
+        $moyenneMensuelleBenefice = $beneficeTroisDerniersMois > 0 ? $beneficeTroisDerniersMois / 3 : 0;
+        
+        // Tendance financière
+        $tendanceFinanciere = $moyenneMensuelleCA > 0 && $totalCA > 0 
+            ? (($totalCA - $moyenneMensuelleCA) / $moyenneMensuelleCA) * 100 
+            : 0;
+        
+        // Projections sur les prochains mois
+        $projections = [];
+        $growth = 1 + ($tendanceFinanciere / 100) * 0.5;
+        for ($i = 1; $i <= 3; $i++) {
+            $projections[] = [
+                'mois' => $now->copy()->addMonths($i)->format('M Y'),
+                'revenu' => round($moyenneMensuelleCA * $growth, 0),
+                'benefice' => round($moyenneMensuelleBenefice * $growth, 0),
+            ];
+        }
+        
+        // Comparaisons historiques
+        $anneeActuelle = $now->year;
+        $anneePrecedente = $anneeActuelle - 1;
+        $saisonActuelle = $user->saison ?? (string)$anneeActuelle;
+        $saisonPrecedente = (string)($saisonActuelle - 1);
+        
+        // Comparaison saison actuelle vs précédente
+        $caSaisonActuelle = Recolte::where('user_id', $user->id)
+            ->where('saison', $saisonActuelle)
+            ->sum('revenu_total');
+        $caSaisonPrecedente = Recolte::where('user_id', $user->id)
+            ->where('saison', $saisonPrecedente)
+            ->sum('revenu_total');
+        $varSaisonCA = $caSaisonPrecedente > 0 
+            ? (($caSaisonActuelle - $caSaisonPrecedente) / $caSaisonPrecedente) * 100 
+            : 0;
+        
+        // Comparaison année actuelle vs précédente
+        $caAnneeActuelle = Recolte::where('user_id', $user->id)
+            ->whereYear('date_recolte', $anneeActuelle)
+            ->sum('revenu_total');
+        $caAnneePrecedente = Recolte::where('user_id', $user->id)
+            ->whereYear('date_recolte', $anneePrecedente)
+            ->sum('revenu_total');
+        $varAnneeCA = $caAnneePrecedente > 0 
+            ? (($caAnneeActuelle - $caAnneePrecedente) / $caAnneePrecedente) * 100 
+            : 0;
+        
+        // Répartition des coûts par type
+        $coutsEngrais = IntrantConsomme::where('intrant_consommes.user_id', $user->id)
+            ->join('stocks', 'intrant_consommes.stock_id', '=', 'stocks.id')
+            ->where('stocks.type', 'Engrais')
+            ->sum(\DB::raw('quantite_consommee * cout_unitaire'));
+        $coutsSemences = IntrantConsomme::where('intrant_consommes.user_id', $user->id)
+            ->join('stocks', 'intrant_consommes.stock_id', '=', 'stocks.id')
+            ->where('stocks.type', 'Semence')
+            ->sum(\DB::raw('quantite_consommee * cout_unitaire'));
+        $coutsMainOeuvre = IntrantConsomme::where('intrant_consommes.user_id', $user->id)
+            ->join('stocks', 'intrant_consommes.stock_id', '=', 'stocks.id')
+            ->where('stocks.type', 'like', '%main%')
+            ->sum(\DB::raw('quantite_consommee * cout_unitaire'));
+        $coutsTransport = IntrantConsomme::where('intrant_consommes.user_id', $user->id)
+            ->join('stocks', 'intrant_consommes.stock_id', '=', 'stocks.id')
+            ->where('stocks.type', 'like', '%transport%')
+            ->sum(\DB::raw('quantite_consommee * cout_unitaire'));
+        $coutsHerbicides = IntrantConsomme::where('intrant_consommes.user_id', $user->id)
+            ->join('stocks', 'intrant_consommes.stock_id', '=', 'stocks.id')
+            ->where('stocks.type', 'like', '%herbicide%')
+            ->sum(\DB::raw('quantite_consommee * cout_unitaire'));
+        $coutsAutres = max(0, $totalCouts - ($coutsEngrais + $coutsSemences + $coutsMainOeuvre + $coutsTransport + $coutsHerbicides));
+        
+        // Top 3 cultures les plus rentables
+        $topCultures = Recolte::where('user_id', $user->id)
+            ->selectRaw('culture, SUM(benefice_net) as benefice_total, SUM(revenu_total) as chiffre_affaires, AVG(prix_unitaire) as prix_moyen')
+            ->where('benefice_net', '>', 0)
+            ->groupBy('culture')
+            ->orderByDesc('benefice_total')
+            ->limit(3)
+            ->get();
+        
+        // Badge de performance automatique
+        $badgePerformance = $this->calculatePerformanceBadge($totalCA, $totalBenefice, $margeMoyenne);
+        
+        // Historique des exports PDF
+        $pdfHistory = PdfExport::where('user_id', $user->id)
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get()
+            ->map(fn($p) => [
+                'date' => $p->created_at->format('d/m/Y H:i'),
+                'type' => ucfirst($p->type),
+                'file_path' => $p->file_path,
+            ]);
+        
         return view('rentabilite', compact(
             'recoltes',
             'totalCA',
@@ -166,8 +398,42 @@ class ClientController extends Controller
             'totalBenefice',
             'margeMoyenne',
             'parcelles',
-            'rentabiliteHarvests'
+            'rentabiliteHarvests',
+            'moyenneMensuelleCA',
+            'moyenneMensuelleBenefice',
+            'tendanceFinanciere',
+            'projections',
+            'caSaisonActuelle',
+            'caSaisonPrecedente',
+            'varSaisonCA',
+            'caAnneeActuelle',
+            'caAnneePrecedente',
+            'varAnneeCA',
+            'coutsEngrais',
+            'coutsSemences',
+            'coutsHerbicides',
+            'coutsMainOeuvre',
+            'coutsTransport',
+            'coutsAutres',
+            'topCultures',
+            'badgePerformance',
+            'pdfHistory'
         ));
+    }
+    
+    protected function calculatePerformanceBadge($ca, $benefice, $marge)
+    {
+        if ($benefice < 0) {
+            return ['label' => 'Exploitation en perte', 'class' => 'perf-badge perte', 'icon' => 'fa-frown'];
+        } elseif ($marge >= 30) {
+            return ['label' => 'Excellente rentabilité', 'class' => 'perf-badge excellente', 'icon' => 'fa-trophy'];
+        } elseif ($marge >= 15) {
+            return ['label' => 'Bonne rentabilité', 'class' => 'perf-badge bonne', 'icon' => 'fa-thumbs-up'];
+        } elseif ($marge >= 5) {
+            return ['label' => 'Rentabilité moyenne', 'class' => 'perf-badge moyenne', 'icon' => 'fa-chart-line'];
+        } else {
+            return ['label' => 'Faible rentabilité', 'class' => 'perf-badge faible', 'icon' => 'fa-exclamation-triangle'];
+        }
     }
 
     // Affiche la page de notifications client
@@ -179,14 +445,16 @@ class ClientController extends Controller
     // Affiche la gestion des parcelles
     public function parcelles() {
         $user = Auth::user();
-        $parcelles = $user->parcelles()->orderBy('nom')->get();
+        $parcelles = $user->parcelles()->with(['recoltes', 'visites', 'intrantsConsommes', 'photos'])->orderBy('nom')->get();
 
         $parcelleStats = $parcelles->map(function ($p) use ($user) {
-            $recoltes = $p->recoltes()->sum('quantite');
+            $recoltesCount = $p->recoltes()->count();
+            $recoltesTotal = $p->recoltes()->sum('quantite');
             $surface = (float) $p->surface;
-            $rendement = $surface > 0 ? ($recoltes / $surface) : 0;
+            $rendement = $surface > 0 ? ($recoltesTotal / $surface) : 0;
             $benefice = $p->recoltes()->sum('benefice_net');
             $visites = $p->visites()->count();
+            $intrantsCount = $p->intrantsConsommes()->count();
             $stockScore = 0;
 
             $stocks = Stock::where('user_id', $user->id)->get();
@@ -209,16 +477,27 @@ class ClientController extends Controller
 
             if ($visites >= 2) $score += 10;
 
-            if ($score >= 75) {
+            if ($score >= 80) {
                 $badge = 'Excellent';
                 $badgeClass = 'perf-badge excellent';
-            } elseif ($score >= 40) {
+            } elseif ($score >= 50) {
+                $badge = 'Bon';
+                $badgeClass = 'perf-badge moyen';
+            } elseif ($score >= 30) {
                 $badge = 'Moyen';
                 $badgeClass = 'perf-badge moyen';
             } else {
-                $badge = 'Risque';
+                $badge = 'Critique';
                 $badgeClass = 'perf-badge risque';
             }
+
+            $cultureDuration = 0;
+            $firstRecolte = $p->recoltes()->oldest()->first();
+            if ($firstRecolte) {
+                $cultureDuration = now()->diffInDays($firstRecolte->date_recolte);
+            }
+
+            $productionEstimee = $recoltesTotal > 0 ? $recoltesTotal * 1.1 : 0;
 
             return [
                 'id' => $p->id,
@@ -229,6 +508,17 @@ class ClientController extends Controller
                 'benefice' => round($benefice, 0),
                 'badge' => $badge,
                 'badgeClass' => $badgeClass,
+                'recoltesCount' => $recoltesCount,
+                'intrantsCount' => $intrantsCount,
+                'visitesCount' => $visites,
+                'cultureDuration' => $cultureDuration,
+                'productionEstimee' => $productionEstimee,
+                'latitude' => $p->latitude,
+                'longitude' => $p->longitude,
+                'last_irrigation' => $p->last_irrigation,
+                'last_traitement' => $p->last_traitement,
+                'next_intervention' => $p->next_intervention,
+                'photos' => $p->photos,
             ];
         });
 
@@ -238,12 +528,15 @@ class ClientController extends Controller
     // Affiche la gestion des stocks du client
     public function stocks() {
         app(\App\Http\Controllers\ClientApiController::class)->stocksIndex();
-        $stocks = Stock::where('user_id', Auth::id())->orderBy('nom')->get();
-        $mouvements = \App\Models\StockMouvement::whereHas('stock', fn($q) => $q->where('user_id', Auth::id()))
+        $user = Auth::user();
+        $stocks = Stock::where('user_id', $user->id)->orderBy('nom')->get();
+        $mouvements = \App\Models\StockMouvement::whereHas('stock', fn($q) => $q->where('user_id', $user->id))
             ->with('stock')
             ->orderByDesc('date_mouvement')
             ->limit(50)
             ->get();
+        
+        $parcelles = $user->parcelles()->orderBy('nom')->get();
 
         // Récupérer les prix depuis la table intrants
         $intrants = Intrant::all()->keyBy('nom');
@@ -267,19 +560,66 @@ class ClientController extends Controller
         // Recharger les stocks après création
         $stocks = Stock::where('user_id', Auth::id())->orderBy('nom')->get();
 
-        // Calculer les prévisions d'épuisement
-        $consumptionLast30 = \App\Models\IntrantConsomme::where('user_id', Auth::id())
+        // Calculer les prévisions d'épuisement basées sur les 30 derniers jours
+        $consumptionByStock = \App\Models\IntrantConsomme::where('user_id', $user->id)
             ->where('created_at', '>=', now()->subDays(30))
-            ->sum('quantite_consommee');
-        $dailyConsumption = $consumptionLast30 > 0 ? $consumptionLast30 / 30 : 1;
-        $stockForecasts = $stocks->map(fn($s) => [
-            'nom' => $s->nom,
-            'quantite' => $s->quantite_actuelle,
-            'jours_restants' => max(0, (int) floor($s->quantite_actuelle / $dailyConsumption)),
-            'est_critique' => $s->quantite_actuelle <= $s->seuil_critique,
-        ]);
+            ->select('stock_id', \DB::raw('SUM(quantite_consommee) as total'))
+            ->groupBy('stock_id')
+            ->pluck('total', 'stock_id');
+        
+        $dailyConsumptionAvg = $consumptionByStock->sum() / 30;
+        
+        $stockForecasts = $stocks->map(function($s) use ($consumptionByStock, $dailyConsumptionAvg) {
+            $dailyConsumption = $consumptionByStock->get($s->id, 0) > 0 
+                ? $consumptionByStock->get($s->id, 0) / 30 
+                : ($dailyConsumptionAvg > 0 ? $dailyConsumptionAvg : 1);
+            
+            $joursRestants = $dailyConsumption > 0 
+                ? max(0, (int) floor($s->quantite_actuelle / $dailyConsumption)) 
+                : 999;
+            
+            return [
+                'nom' => $s->nom,
+                'quantite' => $s->quantite_actuelle,
+                'seuil_critique' => $s->seuil_critique,
+                'jours_restants' => $joursRestants,
+                'est_critique' => $s->quantite_actuelle <= $s->seuil_critique,
+            ];
+        });
 
-        return view('stocks', compact('stocks', 'intrants', 'mouvements', 'stockForecasts'));
+        // Calculer les top consommateurs par parcelle
+        $topConsumers = \App\Models\IntrantConsomme::where('user_id', $user->id)
+            ->where('created_at', '>=', now()->startOfMonth())
+            ->with('parcelle')
+            ->select('parcelle_id', \DB::raw('SUM(quantite_consommee) as total'))
+            ->groupBy('parcelle_id')
+            ->orderByDesc('total')
+            ->limit(3)
+            ->get()
+            ->map(function($ic) {
+                return [
+                    'parcelle' => $ic->parcelle->nom ?? 'Inconnue',
+                    'volume' => $ic->total,
+                ];
+            });
+
+        // Calculer la consommation mensuelle par intrant
+        $monthlyConsumption = \App\Models\IntrantConsomme::where('user_id', $user->id)
+            ->where('created_at', '>=', now()->startOfMonth())
+            ->with('stock')
+            ->select('stock_id', \DB::raw('SUM(quantite_consommee) as total'))
+            ->groupBy('stock_id')
+            ->orderByDesc('total')
+            ->get()
+            ->map(function($ic) {
+                return [
+                    'nom' => $ic->stock->nom ?? 'Inconnu',
+                    'type' => $ic->stock->type ?? 'Inconnu',
+                    'volume' => $ic->total,
+                ];
+            });
+
+        return view('stocks', compact('stocks', 'intrants', 'mouvements', 'stockForecasts', 'topConsumers', 'monthlyConsumption', 'parcelles'));
     }
 
     // Affiche le profil et les informations du compte

@@ -21,6 +21,12 @@
           </div>
         </div>
 
+        @if(session('success'))
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i> {{ session('success') }}
+          </div>
+        @endif
+
         <!-- Contact Info Cards -->
         <section class="contact-info-section">
           <div class="contact-grid">
@@ -93,18 +99,24 @@
           <article class="card map-card">
             <div class="card-header">
               <div>
-                <h3 style="margin:0; font-size:16px;">Notre bureau</h3>
-                <div class="small muted">Bamako, Mali</div>
+                <h3 style="margin:0; font-size:16px;">Notre localisation</h3>
+                <div class="small muted">Institut Africain de Management (IAM Bamako)</div>
               </div>
               <div class="card-icon">
                 <i class="fas fa-map-marked-alt"></i>
               </div>
             </div>
-            <div class="map-container" id="map"></div>
+            <div id="map" style="height:320px;">
+              <div class="map-placeholder" style="display:flex; align-items:center; justify-content:center; height:100%; color:#64748b; font-size:14px; background:linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);">
+                <i class="fas fa-map-marked-alt" style="font-size:48px; margin-bottom:12px;"></i><br>
+                Carte interactive - IAM Bamako
+              </div>
+            </div>
             <div class="map-address">
               <div class="map-address-content">
-                <strong>SeneBI</strong>
-                <span>Quartier de la Gare</span>
+                <strong>SeneBI - IAM Bamako</strong>
+                <span>Institut Africain de Management (IAM Bamako)</span>
+                <span>Hamdallaye ACI 2000, Immeuble Saramourou Keita</span>
                 <span>Bamako, Mali</span>
               </div>
             </div>
@@ -288,14 +300,23 @@
       padding-bottom: 20px;
     }
     
-    .map-container {
-      height: 320px;
-      margin: 0 24px 0;
-      border-radius: 0 0 18px 18px;
+    #map {
+      height: 320px !important;
+      min-height: 320px !important;
+      width: calc(100% - 48px) !important;
+      margin: 0 24px 0 !important;
+      border-radius: 0 0 18px 18px !important;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+      position: relative !important;
     }
     
-    .map-container .leaflet-control-container {
-      display: none;
+    .leaflet-container {
+      background: transparent !important;
+    }
+    
+    /* Force map card to allow map display */
+    .map-card {
+      overflow: visible !important;
     }
     
     .map-address {
@@ -379,27 +400,36 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-207O9F7k7J8zv2Y4b8VXXVPFyQTYm2qC9rYzX5b5p2A=" crossorigin=""></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var map = L.map('map', {
-        zoomControl: false,
-        attributionControl: false
-      }).setView([12.6394, -8.0120], 15);
-      
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19
-      }).addTo(map);
-      
-      var marker = L.marker([12.6478, -8.0076], {
-        icon: L.divIcon({
-          className: 'custom-marker',
-          html: '<div style="background: var(--accent); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fas fa-map-marker-alt"></i></div>',
-          iconSize: [30, 30],
-          iconAnchor: [15, 30]
-        })
-      }).addTo(map);
-      
-      marker.bindPopup('<strong>SeneBI</strong><br>Quartier de la Gare<br>Bamako, Mali').openPopup();
-    });
+      document.addEventListener('DOMContentLoaded', function() {
+        var mapElement = document.getElementById('map');
+        var placeholder = mapElement.querySelector('.map-placeholder');
+        
+        var map = L.map('map', {
+          zoomControl: false,
+          attributionControl: false
+        }).setView([12.639, -8.002], 15);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          className: 'map-tiles'
+        }).addTo(map);
+        
+        var marker = L.marker([12.639, -8.002], {
+          icon: L.divIcon({
+            className: 'custom-marker',
+            html: '<div style="background: #059669; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center;"><i class="fas fa-map-marker-alt"></i></div>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30]
+          })
+        }).addTo(map);
+        
+        marker.bindPopup('<strong>SeneBI</strong><br>Institut Africain de Management (IAM Bamako)<br>Hamdallaye ACI 2000, Bamako, Mali').openPopup();
+        
+        setTimeout(function() {
+          map.invalidateSize();
+          if (placeholder) placeholder.style.display = 'none';
+        }, 100);
+      });
     </script>
   </body>
 </html>

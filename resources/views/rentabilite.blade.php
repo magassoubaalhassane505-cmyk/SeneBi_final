@@ -4,12 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SeneBI - Rentabilite</title>
-    <link rel="stylesheet" href="{{ asset('assets/css/base.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/css/base.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/rentabilite.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/region-filter.css') }}" />
-    
-    <!-- CSS pour centrage parfait des KPI -->
-    <style>
+    <link rel="stylesheet" href="{{ asset('assets/css/visual-harmony.css') }}" />
+     <link rel="stylesheet" href="{{ asset('assets/css/region-filter.css') }}" />
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+     
+     <!-- CSS pour centrage parfait des KPI -->
+     <style>
+         /* NOUVEAUX STYLES - Sections Rentabilité BI */
         /* HARMONISATION TOTALE - Design identique à client-dashboard */
         .kpi-card {
             display: flex;
@@ -238,7 +241,7 @@
        @include('header-client')  
 
       <main class="container">
-        <section class="page-head">
+        <section class="page-head senebi-page-transition">
           <div>
             <h1>Rentabilite & Exports</h1>
             <p>Analyse financiere et generation de rapports</p>
@@ -663,7 +666,7 @@
               gap: 12px;
             }
           }
-        </style>
+</style>
 
         <script>
           // Initialisation du calculateur
@@ -1616,14 +1619,305 @@
               <!-- LIGNE 3: Phrase d'analyse en bas -->
               <div class="explanation" style="font-size: 0.7rem !important; color: #ef4444 !important; white-space: nowrap !important; margin-top: auto !important; margin-bottom: 8px !important; padding-bottom: 8px !important; font-weight: 500 !important; overflow: hidden !important; text-overflow: ellipsis !important; display: block !important; visibility: visible !important; opacity: 1 !important;">Vous perdez 2 112 FCFA pour chaque 1 000 FCFA gagnés.</div>
             </div>
-          </article>
+</article>
         </section>
 
-        
+        <!-- ============================================
+             SECTION 1: PRÉVISIONS FINANCIÈRES
+             ============================================ -->
+<section class="card forecasts-section">
+           <div class="card-header">
+             <div class="card-icon icon-box" aria-hidden="true"><i class="fas fa-chart-line"></i></div>
+             <h3 class="section-title">Prévisions Financières</h3>
+           </div>
+           <div class="forecasts-grid">
+             <div class="forecast-card">
+               <span class="forecast-label">Revenu prévisionnel mensuel</span>
+               <span class="forecast-value" id="revenuPrevisionnel">{{ number_format($moyenneMensuelleCA, 0, ',', ' ') }} FCFA</span>
+             </div>
+             <div class="forecast-card">
+               <span class="forecast-label">Bénéfice estimé mensuel</span>
+               <span class="forecast-value" id="beneficeEstime">{{ number_format($moyenneMensuelleBenefice, 0, ',', ' ') }} FCFA</span>
+             </div>
+             <div class="forecast-card">
+               <span class="forecast-label">Tendance financière</span>
+               <span class="forecast-value {{ $tendanceFinanciere >= 0 ? 'positive' : 'negative' }}" id="tendanceFinanciere">
+                 <i class="fas fa-arrow-{{ $tendanceFinanciere >= 0 ? 'up' : 'down' }}"></i> {{ number_format($tendanceFinanciere, 1, ',', ' ') }}%
+               </span>
+             </div>
+           </div>
+           
+           <div class="projections-content">
+             <div class="projections-header">
+               <div class="header-icon">
+                 <i class="fas fa-calendar-alt"></i>
+               </div>
+               <h3>Projection sur les prochains mois</h3>
+             </div>
+             
+             <div class="projections-summary-cards">
+               <div class="projection-summary-card">
+                 <div class="summary-icon revenue">
+                   <i class="fas fa-euro-sign"></i>
+                 </div>
+                 <span class="projection-summary-label">Revenu Moyen</span>
+                 <span class="projection-summary-value positive" id="summaryRevenu">{{ number_format($moyenneMensuelleCA, 0, ',', ' ') }} FCFA</span>
+               </div>
+               <div class="projection-summary-card">
+                 <div class="summary-icon benefice">
+                   <i class="fas fa-piggy-bank"></i>
+                 </div>
+                 <span class="projection-summary-label">Bénéfice Moyen</span>
+                 <span class="projection-summary-value {{ $moyenneMensuelleBenefice >= 0 ? 'positive' : 'negative' }}" id="summaryBenefice">{{ number_format($moyenneMensuelleBenefice, 0, ',', ' ') }} FCFA</span>
+               </div>
+               <div class="projection-summary-card">
+                 <div class="summary-icon {{ $tendanceFinanciere >= 0 ? 'tendance-up' : 'tendance-down' }}">
+                   <i class="fas fa-arrow-{{ $tendanceFinanciere >= 0 ? 'up' : 'down' }}"></i>
+                 </div>
+                 <span class="projection-summary-label">Tendance</span>
+                 <span class="projection-summary-value {{ $tendanceFinanciere >= 0 ? 'positive' : 'negative' }}" id="summaryTendance">{{ number_format($tendanceFinanciere, 1, ',', ' ') }}%</span>
+               </div>
+               <div class="projection-summary-card">
+                 <div class="summary-icon benefice">
+                   <i class="fas fa-seedling"></i>
+                 </div>
+                 <span class="projection-summary-label">Total Projections</span>
+                 <span class="projection-summary-value positive" id="totalProjections">{{ number_format(array_sum(array_column($projections, 'revenu')), 0, ',', ' ') }} FCFA</span>
+               </div>
+             </div>
+             
+             <div class="projections-monthly-grid">
+               @foreach($projections as $index => $proj)
+                 <div class="projection-monthly-card upcoming">
+                   <div class="projection-month-header">
+                     <span class="projection-month-title">{{ $proj['mois'] }}</span>
+                     <div class="projection-month-icon">
+                       <i class="fas fa-calendar-day"></i>
+                     </div>
+                   </div>
+                   
+                   <div class="projection-financial-details">
+                     <div class="projection-financial-item">
+                       <span class="projection-financial-label">
+                         <i class="fas fa-euro-sign"></i> Revenu
+                       </span>
+                       <span class="projection-financial-amount revenue">{{ number_format($proj['revenu'], 0, ',', ' ') }} FCFA</span>
+                     </div>
+                     <div class="projection-financial-item">
+                       <span class="projection-financial-label">
+                         <i class="fas fa-hand-holding-usd"></i> Bénéfice
+                       </span>
+                       <span class="projection-financial-amount {{ $proj['benefice'] >= 0 ? 'benefice-positive' : 'benefice-negative' }}">{{ number_format($proj['benefice'], 0, ',', ' ') }} FCFA</span>
+                     </div>
+                   </div>
+                   
+                   <div class="projection-trend-indicator">
+                     <span class="projection-trend-badge {{ $tendanceFinanciere >= 0 ? 'up' : 'down' }}">
+                       <i class="fas fa-arrow-{{ $tendanceFinanciere >= 0 ? 'up' : 'down' }}"></i>
+                       {{ $tendanceFinanciere >= 0 ? 'Hausse' : 'Baisse' }}
+                     </span>
+                   </div>
+                 </div>
+               @endforeach
+             </div>
+</div>
+            </div>
+          </section>
+ 
+         <!-- ============================================
+              SECTION 2: COMPARAISON HISTORIQUE
+              ============================================ -->
+          <section class="card comparison-section">
+            <div class="card-header">
+              <div class="card-icon icon-box" aria-hidden="true"><i class="fas fa-exchange-alt"></i></div>
+              <h3 class="section-title">Comparaison Historique</h3>
+            </div>
+           <div class="comparison-grid">
+             <div class="comparison-card">
+               <h3>Saison actuelle vs Précédente</h3>
+               <div class="comparison-values">
+                 <div>
+                   <span class="comparison-label">CA Actuel</span>
+                   <span class="comparison-value">{{ number_format($caSaisonActuelle, 0, ',', ' ') }} FCFA</span>
+                 </div>
+                 <div>
+                   <span class="comparison-label">CA Précédent</span>
+                   <span class="comparison-value">{{ number_format($caSaisonPrecedente, 0, ',', ' ') }} FCFA</span>
+                 </div>
+                 <div>
+                   <span class="comparison-label">Variation</span>
+                   <span class="comparison-var {{ $varSaisonCA >= 0 ? 'positive' : 'negative' }}">
+                     <i class="fas fa-arrow-{{ $varSaisonCA >= 0 ? 'up' : 'down' }}"></i> {{ number_format($varSaisonCA, 1, ',', ' ') }}%
+                   </span>
+                 </div>
+               </div>
+             </div>
+             <div class="comparison-card">
+               <h3>Année actuelle vs Précédente</h3>
+               <div class="comparison-values">
+                 <div>
+                   <span class="comparison-label">CA Actuel</span>
+                   <span class="comparison-value">{{ number_format($caAnneeActuelle, 0, ',', ' ') }} FCFA</span>
+                 </div>
+                 <div>
+                   <span class="comparison-label">CA Précédent</span>
+                   <span class="comparison-value">{{ number_format($caAnneePrecedente, 0, ',', ' ') }} FCFA</span>
+                 </div>
+                 <div>
+                   <span class="comparison-label">Variation</span>
+                   <span class="comparison-var {{ $varAnneeCA >= 0 ? 'positive' : 'negative' }}">
+                     <i class="fas fa-arrow-{{ $varAnneeCA >= 0 ? 'up' : 'down' }}"></i> {{ number_format($varAnneeCA, 1, ',', ' ') }}%
+                   </span>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </section>
+
+         <!-- ============================================
+              SECTION 3: RÉPARTITION DES COÛTS
+              ============================================ -->
+         <section class="card costs-section">
+           <div class="card-header">
+             <div class="card-icon icon-box" aria-hidden="true"><i class="fas fa-pie-chart"></i></div>
+             <h3 class="section-title">Répartition des Coûts</h3>
+           </div>
+          <div class="costs-grid">
+            <div class="cost-item">
+              <span class="cost-label"><i class="fas fa-seedling"></i> Engrais</span>
+              <span class="cost-value">{{ number_format($coutsEngrais, 0, ',', ' ') }} FCFA</span>
+              <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCouts > 0 ? ($coutsEngrais / $totalCouts * 100) : 0 }}%"></div></div>
+            </div>
+            <div class="cost-item">
+              <span class="cost-label"><i class="fas fa-leaf"></i> Semences</span>
+              <span class="cost-value">{{ number_format($coutsSemences, 0, ',', ' ') }} FCFA</span>
+              <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCouts > 0 ? ($coutsSemences / $totalCouts * 100) : 0 }}%"></div></div>
+            </div>
+            <div class="cost-item">
+              <span class="cost-label"><i class="fas fa-spray-can"></i> Herbicides</span>
+              <span class="cost-value">{{ number_format($coutsHerbicides, 0, ',', ' ') }} FCFA</span>
+              <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCouts > 0 ? ($coutsHerbicides / $totalCouts * 100) : 0 }}%"></div></div>
+            </div>
+            <div class="cost-item">
+              <span class="cost-label"><i class="fas fa-users"></i> Main-d'œuvre</span>
+              <span class="cost-value">{{ number_format($coutsMainOeuvre, 0, ',', ' ') }} FCFA</span>
+              <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCouts > 0 ? ($coutsMainOeuvre / $totalCouts * 100) : 0 }}%"></div></div>
+            </div>
+            <div class="cost-item">
+              <span class="cost-label"><i class="fas fa-truck"></i> Transport</span>
+              <span class="cost-value">{{ number_format($coutsTransport, 0, ',', ' ') }} FCFA</span>
+              <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCouts > 0 ? ($coutsTransport / $totalCouts * 100) : 0 }}%"></div></div>
+            </div>
+            <div class="cost-item">
+              <span class="cost-label"><i class="fas fa-ellipsis-h"></i> Autres coûts</span>
+              <span class="cost-value">{{ number_format($coutsAutres, 0, ',', ' ') }} FCFA</span>
+              <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCouts > 0 ? ($coutsAutres / $totalCouts * 100) : 0 }}%"></div></div>
+            </div>
+          </div>
+          <div class="cost-chart-wrap">
+            <canvas id="costsChart"></canvas>
+          </div>
+        </section>
+
+        <!-- ============================================
+             SECTION 4: BADGE DE PERFORMANCE
+             ============================================ -->
+         <section class="card performance-badge-section">
+           <div class="card-header">
+             <div class="card-icon icon-box" aria-hidden="true"><i class="fas fa-award"></i></div>
+             <h3 class="section-title">Performance de l'Exploitation</h3>
+           </div>
+           <div class="badge-display">
+             <span class="perf-badge {{ $badgePerformance['class'] }} large">
+              <i class="fas {{ $badgePerformance['icon'] }}"></i> {{ $badgePerformance['label'] }}
+            </span>
+          </div>
+        </section>
+
+        <!-- ============================================
+             SECTION 5: TOP 3 CULTURES RENTABLES
+             ============================================ -->
+         <section class="card top-cultures-section">
+           <div class="card-header">
+             <div class="card-icon icon-box" aria-hidden="true"><i class="fas fa-seedling"></i></div>
+             <h3 class="section-title">Top 3 Cultures les plus Rentables</h3>
+           </div>
+          <div class="top-cultures-grid">
+            @if($topCultures->count() > 0)
+              @foreach($topCultures as $index => $culture)
+                <div class="top-culture-card rank-{{ $index + 1 }}">
+                  <div class="rank-badge">{{ $index + 1 }}</div>
+                  <div class="culture-info">
+                    <span class="culture-name">{{ $culture->culture }}</span>
+                    <span class="culture-benefice">{{ number_format($culture->benefice_total, 0, ',', ' ') }} FCFA</span>
+                    <span class="culture-ca">CA: {{ number_format($culture->chiffre_affaires, 0, ',', ' ') }} FCFA</span>
+                  </div>
+                </div>
+              @endforeach
+            @else
+              <div class="no-data">Aucune culture rentable enregistrée</div>
+            @endif
+          </div>
+        </section>
+
+        <!-- ============================================
+             SECTION 6: RECOMMANDATIONS IA
+             ============================================ -->
+         <section class="card ai-recommendations-section">
+           <div class="card-header">
+             <div class="card-icon icon-box" aria-hidden="true"><i class="fas fa-robot"></i></div>
+             <h3 class="section-title">Recommandations IA Financières</h3>
+           </div>
+          <div id="aiRecommendationsList" class="ai-recommendations-list">
+            <!-- Les recommandations seront générées par JavaScript -->
+          </div>
+        </section>
+
+        <!-- ============================================
+             SECTION 7: HISTORIQUE EXPORTS PDF
+             ============================================ -->
+         <section class="card pdf-history-section">
+           <div class="card-header">
+             <div class="card-icon icon-box" aria-hidden="true"><i class="fas fa-history"></i></div>
+             <h3 class="section-title">Historique des Exports PDF</h3>
+           </div>
+          @if($pdfHistory->count() > 0)
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Date d'export</th>
+                    <th>Type de rapport</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="pdfHistoryTable">
+                  @foreach($pdfHistory as $pdf)
+                    <tr>
+                      <td>{{ $pdf['date'] }}</td>
+                      <td>{{ $pdf['type'] }}</td>
+                      <td>
+                        <button class="btn small re-download-btn" data-file="{{ $pdf['file_path'] }}">
+                          <i class="fas fa-download"></i> Retélécharger
+                        </button>
+                      </td>
+                    </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+          @else
+            <p class="no-history">Aucun export PDF pour le moment. Générez votre premier rapport ci-dessous.</p>
+          @endif
+        </section>
+
         <section class="charts-grid">
           <article class="card">
-            <h2>Comparaison Revenus vs Couts</h2>
-            <p class="chart-hint">Vert = revenus · Rouge = couts · Violet = benefice (meme echelle)</p>
+            <div class="card-header">
+              <div class="card-icon icon-box green" aria-hidden="true"><i class="fas fa-chart-line"></i></div>
+              <h3 class="section-title">Comparaison Revenus vs Coûts</h3>
+            </div>
+            <p class="chart-hint">Vert = revenus · Rouge = coûts · Violet = bénéfice (même échelle)</p>
             <div class="chart-wrap">
               <canvas id="profitChart"></canvas>
             </div>
@@ -1634,7 +1928,10 @@
             </div>
           </article>
           <article class="card">
-            <h2>Performance par Culture</h2>
+            <div class="card-header">
+              <div class="card-icon icon-box purple" aria-hidden="true"><i class="fas fa-seedling"></i></div>
+              <h3 class="section-title">Performance par Culture</h3>
+            </div>
             <p class="chart-hint">Rendement moyen par culture (t/ha) — axes explicites</p>
             <div class="chart-wrap">
               <canvas id="cultureChart"></canvas>
@@ -1643,7 +1940,10 @@
         </section>
 
         <section class="card table-card">
-          <h2>Detail des Recoltes et Revenus</h2>
+          <div class="card-header">
+            <div class="card-icon icon-box" aria-hidden="true"><i class="fas fa-table"></i></div>
+            <h3 class="section-title">Détail des Récoltes et Revenus</h3>
+          </div>
           
           <!-- Barre de recherche -->
           <div style="margin-bottom: 16px;">
@@ -1718,6 +2018,22 @@
     <script>
       window.SeneBI_RENTABILITE = {
         harvests: @json($rentabiliteHarvests),
+        forecasts: {
+          revenuPrevisionnel: {{ $moyenneMensuelleCA }},
+          beneficeEstime: {{ $moyenneMensuelleBenefice }},
+          tendance: {{ $tendanceFinanciere }},
+          projections: @json($projections)
+        },
+        costs: {
+          engrais: {{ $coutsEngrais }},
+          semences: {{ $coutsSemences }},
+          herbicides: {{ $coutsHerbicides }},
+          mainOeuvre: {{ $coutsMainOeuvre }},
+          transport: {{ $coutsTransport }},
+          autres: {{ $coutsAutres }}
+        },
+        topCultures: @json($topCultures),
+        pdfHistory: @json($pdfHistory)
       };
     </script>
     <script src="{{ asset('assets/js/rentabilite.js') }}"></script>
@@ -1941,9 +2257,9 @@
 
             adviceCard.innerHTML = `
               <div style="display:flex; align-items:flex-start; gap:12px;">
-                <div style="width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:12px; background:#eef2ff; color:#2563eb; flex-shrink:0;">
-                  ${iconHtml}
-                </div>
+                 <div class="icon-box-sm icon-box blue" style="display: inline-flex;">
+                   ${iconHtml}
+                 </div>
                 <div>
                   <h3 style="margin: 0 0 6px 0; color: #0f172a; font-size: 15px; letter-spacing: 0.01em;">Conseil IA SeneBI</h3>
                   <p class="ai-advice-text" style="margin: 0; color: #334155; font-size: 13.5px; line-height: 1.6;">${advice}</p>
@@ -1977,7 +2293,88 @@
         // Générer le conseil IA toutes les 30 secondes
         generateAIAdvice();
         setInterval(generateAIAdvice, 30000);
+        
+        // Initialiser le graphique des coûts
+        initCostsChart();
+        
+        // Générer les recommandations IA financières
+        generateFinancialRecommendations();
       });
+      
+      // GRAPHIQUE DES COÛTS
+      function initCostsChart() {
+        const ctx = document.getElementById('costsChart');
+        if (ctx) {
+          new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+              labels: ['Engrais', 'Semences', 'Herbicides', 'Main-d\'œuvre', 'Transport', 'Autres'],
+              datasets: [{
+                data: [{{ $coutsEngrais }}, {{ $coutsSemences }}, {{ $coutsHerbicides }}, {{ $coutsMainOeuvre }}, {{ $coutsTransport }}, {{ $coutsAutres }}],
+                backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#6b7280'],
+                borderWidth: 2,
+                borderColor: '#fff'
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'bottom',
+                  labels: { boxWidth: 12, padding: 16, font: { size: 11 } }
+                }
+              }
+            }
+          });
+        }
+      }
+      
+      // RECOMMANDATIONS IA FINANCIÈRES MULTIPLES
+      function generateFinancialRecommendations() {
+        const container = document.getElementById('aiRecommendationsList');
+        if (!container) return;
+        
+        const ca = parseFloat(document.getElementById('salesKpi')?.querySelector('.number')?.textContent.replace(/[^\d.-]/g, '') || '0') || {{ $totalCA }};
+        const couts = parseFloat(document.getElementById('costKpi')?.querySelector('.number')?.textContent.replace(/[^\d.-]/g, '') || '0') || {{ $totalCouts }};
+        const benefice = ca - couts;
+        const marge = ca > 0 ? (benefice / ca) * 100 : 0;
+        
+        let recommendations = [];
+        
+        if (marge < 0) {
+          recommendations = [
+            { icon: 'fa-exclamation-triangle', text: 'Votre exploitation est en perte. Réduisez les coûts d\'intrants ou augmentez les prix de vente.' },
+            { icon: 'fa-lightbulb', text: 'Analysez les parcelles les moins rentables et envisagez un reclassement.' },
+            { icon: 'fa-hand-holding-seedling', text: 'Contactez un conseiller agricole pour optimisation de vos pratiques.' }
+          ];
+        } else if (marge < 10) {
+          recommendations = [
+            { icon: 'fa-chart-line', text: 'Marge faible: optimisez les coûts d\'engrais et semences.' },
+            { icon: 'fa-calendar-check', text: 'Planifiez vos interventions pour réduire les coûts.' },
+            { icon: 'fa-seedling', text: 'Envisagez des cultures à plus forte valeur ajoutée.' }
+          ];
+        } else if (marge < 20) {
+          recommendations = [
+            { icon: 'fa-thumbs-up', text: 'Bonne rentabilité: surveillez vos coûts pour maintenir celle-ci.' },
+            { icon: 'fa-piggy-bank', text: 'Mettez de côté des excédents pour les investissements futurs.' },
+            { icon: 'fa-chart-pie', text: 'Diversifiez vos cultures pour réduire la dépendance.' }
+          ];
+        } else {
+          recommendations = [
+            { icon: 'fa-trophy', text: 'Excellente rentabilité! Votre stratégie est remarquable.' },
+            { icon: 'fa-rocket', text: 'Réinvestissez pour étendre votre exploitation.' },
+            { icon: 'fa-graduation-cap', text: 'Partagez votre expertise avec d\'autres agriculteurs.' }
+          ];
+        }
+        
+        container.innerHTML = recommendations.map(rec => `
+          <div class="ai-recommendation-item">
+            <div class="ai-recommendation-icon"><i class="fas ${rec.icon}"></i></div>
+            <p class="ai-recommendation-text">${rec.text}</p>
+          </div>
+        `).join('');
+      }
     </script>
   </body>
 </html>
