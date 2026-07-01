@@ -1,16 +1,17 @@
 <!doctype html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SeneBI — Parcelles</title>
-    <link rel="stylesheet" href="{{ asset('assets/css/base.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/parcelles.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/visual-harmony.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/region-filter.css') }}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    
-    <!-- CSS pour Widget Météo -->
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>SeneBI — Parcelles</title>
+  <link rel="stylesheet" href="{{ asset('assets/css/base.css') }}" />
+  <link rel="stylesheet" href="{{ asset('assets/css/parcelles.css') }}" />
+  <link rel="stylesheet" href="{{ asset('assets/css/responsive.css') }}" />
+  <link rel="stylesheet" href="{{ asset('assets/css/visual-harmony.css') }}" />
+  <link rel="stylesheet" href="{{ asset('assets/css/region-filter.css') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <!-- CSS pour Widget Météo -->
     <style>
         /* Widget Météo - Style intégré SeneBI */
         .weather-widget {

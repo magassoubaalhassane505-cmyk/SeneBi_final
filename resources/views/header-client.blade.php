@@ -352,13 +352,16 @@
       animation: pulseOnce 0.6s ease-out;
     }
 
-    @keyframes pulseOnce {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.3); }
-      100% { transform: scale(1); }
-    }
-  </style>
+@keyframes pulseOnce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+</style>
 </header>
+
+<!-- Menu hamburger mobile -->
+@include('partials.nav-mobile')
 
 <script>
   (function() {
@@ -554,6 +557,74 @@
       document.addEventListener('DOMContentLoaded', init);
     } else {
       init();
+    }
+  })();
+
+  // Mobile navigation script
+  (function() {
+    function initMobileNav() {
+      const hamburgerBtn = document.getElementById('hamburgerBtn');
+      const mobileNav = document.getElementById('mobileNav');
+      const mobileNavClose = document.getElementById('mobileNavClose');
+      const mobileNavLinks = document.getElementById('mobileNavLinks');
+      const mobileNavFooter = document.getElementById('mobileNavFooter');
+      const overlay = document.createElement('div');
+      overlay.className = 'mobile-nav-overlay';
+      overlay.id = 'mobileNavOverlay';
+      document.body.appendChild(overlay);
+
+      const links = [
+        { href: '{{ url('/client/dashboard') }}', label: 'Dashboard', active: {{ request()->routeIs('client.dashboard') ? 'true' : 'false' }} },
+        { href: '{{ url('/client/parcelles') }}', label: 'Parcelles', active: {{ request()->routeIs('client.parcelles') ? 'true' : 'false' }} },
+        { href: '{{ url('/client/rentabilite') }}', label: 'Rentabilité', active: {{ request()->routeIs('client.rentabilite') ? 'true' : 'false' }} },
+        { href: '{{ url('/client/stocks') }}', label: 'Stocks', active: {{ request()->routeIs('client.stocks') ? 'true' : 'false' }} },
+        { href: '{{ url('/client/notifications') }}', label: 'Notifications', active: {{ request()->routeIs('client.notifications') ? 'true' : 'false' }} },
+        { href: '{{ url('/client/mon-compte') }}', label: 'Mon compte', active: {{ request()->routeIs('client.compte') ? 'true' : 'false' }} }
+      ];
+
+      mobileNavLinks.innerHTML = links.map(link => 
+        `<a href="${link.href}" class="mobile-nav-link ${link.active ? 'active' : ''}">
+          <span>${link.label}</span>
+        </a>`
+      ).join('');
+
+      mobileNavFooter.innerHTML = `
+        <a class="pill user-pill user-pill--link" href="{{ url('/client/mon-compte') }}">{{ optional($u)->name ?? 'Mon compte' }}</a>
+        <form action="{{ route('logout') }}" method="POST" style="display:block; margin-top:8px;">
+          @csrf
+          <button type="submit" class="pill auth-logout" style="width:100%;">Déconnexion</button>
+        </form>
+      `;
+
+      function openNav() {
+        mobileNav.classList.add('active');
+        overlay.classList.add('active');
+        hamburgerBtn.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeNav() {
+        mobileNav.classList.remove('active');
+        overlay.classList.remove('active');
+        hamburgerBtn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+
+      hamburgerBtn.addEventListener('click', openNav);
+      mobileNavClose.addEventListener('click', closeNav);
+      overlay.addEventListener('click', closeNav);
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileNav.classList.contains('active')) {
+          closeNav();
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMobileNav);
+    } else {
+      initMobileNav();
     }
   })();
 </script>

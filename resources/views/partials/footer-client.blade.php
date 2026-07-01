@@ -35,7 +35,7 @@
       </div>
       <div class="contact-item">
         <i class="fas fa-phone"></i>
-        <span>+223 20 00 00 00</span>
+        <span>+223 72 34 86 48</span>
       </div>
       <div class="contact-item">
         <i class="fas fa-map-marker-alt"></i>

@@ -131,9 +131,6 @@ Route::prefix('client')->middleware('auth')->group(function () {
     })->middleware('auth');
 });
 
-// --- PAGES AUTONOMES (SANS PREFIX) ---
-// Ces pages sont désormais accessibles via les routes préfixées manager/* ou client/*.
-// Les définitions de routes directes sans préfixe ont été supprimées pour éviter les doublons.
 
 // --- ERREURS & AUTRES ---
 Route::get('/403', [AuthController::class, 'error403'])->name('error.403');
