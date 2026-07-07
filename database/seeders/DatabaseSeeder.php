@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'test@example.com'],
             [
-                'name' => 'Test User',
+                'name' => 'Abdoulaye Diop',
                 'password' => bcrypt('password'),
                 'is_active' => true,
             ]
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'mimi.manager@senebi.sn'],
             [
-                'name' => 'Mimi Manager',
+                'name' => 'Maimouna Touré',
                 'password' => 'manager123',
                 'role' => 'admin',
                 'saison' => '2024',
@@ -41,7 +41,7 @@ class DatabaseSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'sidi@sidi-agri.sn'],
             [
-                'name' => 'Client Test',
+                'name' => 'Sidi Diallo',
                 'password' => 'client123',
                 'role' => 'client',
                 'saison' => '2024',
@@ -50,6 +50,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call(DemoUsersSeeder::class);
+        $this->call(BiDataSeeder::class);
         User::reguard();
     }
 }

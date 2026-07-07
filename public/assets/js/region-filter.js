@@ -15,6 +15,9 @@
         }
 
         initRegionData() {
+            if (window.SeneBI_REGIONS_DATA) {
+                return window.SeneBI_REGIONS_DATA;
+            }
             // Simulation des données par région du Mali
             return {
                 all: {
@@ -295,11 +298,16 @@
             const data = this.regionData[this.currentRegion];
             if (!data) return;
 
-            // Mettre à jour les KPIs
-            this.updateKPI('kpiTotalHarvest', data.totalHarvest.toLocaleString());
-            this.updateKPI('kpiCA', (data.ca / 1000000).toFixed(1));
-            this.updateKPI('kpiHa', data.hectares.toFixed(1));
-            this.updateKPI('kpiRend', data.rendement.toFixed(1));
+            // Mettre à jour les KPIs du manager s'ils existent
+            this.updateKPI('total-production', data.totalHarvest.toString());
+            this.updateKPI('ca-estime', (data.ca / 1000000).toString());
+            this.updateKPI('kpiHa', data.hectares.toString());
+            this.updateKPI('nombre-agriculteurs', (data.activeFarmers || 0).toString());
+
+            // Mettre à jour les KPIs du client s'ils existent
+            this.updateKPI('kpiTotalHarvest', data.totalHarvest.toString());
+            this.updateKPI('kpiCA', data.ca.toString());
+            this.updateKPI('kpiRend', data.rendement.toString());
 
             // Mettre à jour le titre de la page
             this.updatePageTitle(data.name);
@@ -329,7 +337,7 @@
                 
                 const currentValue = start + (end - start) * this.easeOutQuad(progress);
                 
-                if (elementId === 'kpiCA') {
+                if (elementId === 'kpiCA' || elementId === 'ca-estime') {
                     element.textContent = currentValue.toFixed(1);
                 } else if (elementId === 'kpiHa' || elementId === 'kpiRend') {
                     element.textContent = currentValue.toFixed(1);
@@ -362,23 +370,48 @@
         }
 
         updateCharts(data) {
-            // Mettre à jour le graphique des prix des céréales
+            // Mettre à jour le graphique de production totale par culture (Manager Dashboard)
+            const prodChart = window.productionChartInstance;
+            if (prodChart && data.cultures) {
+                prodChart.data.labels = data.cultures.map(c => c.name);
+                prodChart.data.datasets[0].data = data.cultures.map(c => c.amount);
+                prodChart.update();
+            }
+
+            // Mettre à jour le graphique des alertes (Manager Dashboard)
+            const alertsChart = window.alertsChartInstance;
+            if (alertsChart && data.alertesParType) {
+                const labels = [];
+                const values = [];
+                const colors = [];
+                const map = data.alertesParType;
+                if (map.stock_critique) { labels.push('Stock critique'); values.push(map.stock_critique); colors.push('#ef4444'); }
+                if (map.faible_rentabilite) { labels.push('Faible rentabilité'); values.push(map.faible_rentabilite); colors.push('#f59e0b'); }
+                if (map.faible_activite) { labels.push('Faible activité'); values.push(map.faible_activite); colors.push('#3b82f6'); }
+                
+                alertsChart.data.labels = labels;
+                alertsChart.data.datasets[0].data = values;
+                alertsChart.data.datasets[0].backgroundColor = colors;
+                alertsChart.update();
+            }
+
+            // Mettre à jour le graphique des prix des céréales (Client Dashboard)
             const priceChart = window.dashboardCharts?.priceChart;
             if (priceChart && data.prices) {
                 priceChart.data.datasets[0].data = data.prices.map(p => p.price);
                 priceChart.update();
             }
 
-            // Mettre à jour le graphique de distribution des cultures
+            // Mettre à jour le graphique de distribution des cultures (Client Dashboard)
             const cultureChart = window.dashboardCharts?.cultureChart;
             if (cultureChart && data.cultures) {
-                cultureChart.data.datasets[0].data = data.cultures.map(c => c.percent);
+                cultureChart.data.datasets[0].data = data.cultures.map(c => c.percent || c.amount);
                 cultureChart.update();
                 
                 // Mettre à jour la culture dominante
                 const dominantCulture = document.getElementById('dominantCulture');
                 if (dominantCulture) {
-                    const dominant = data.cultures.reduce((max, c) => c.percent > max.percent ? c : max);
+                    const dominant = data.cultures.reduce((max, c) => (c.percent || c.amount) > (max.percent || max.amount) ? c : max);
                     dominantCulture.textContent = dominant.name;
                 }
             }

@@ -128,11 +128,13 @@ class ManagementController extends Controller
     }
 
     // NOUVEAU : Affiche les analyses BI (Fichier: analyses-bi.blade.php)
-    public function analysesBi()
+    public function analysesBi(Request $request)
     {
+        $saison = $request->input('saison', Auth::user()->saison ?? '2026');
+
         $stats = [
-            'production_totale' => \App\Models\Recolte::sum('quantite') ?? 0,
-            'revenus_totaux' => \App\Models\Recolte::sum('revenu_total') ?? 0,
+            'production_totale' => \App\Models\Recolte::where('saison', $saison)->sum('quantite') ?? 0,
+            'revenus_totaux' => \App\Models\Recolte::where('saison', $saison)->sum('revenu_total') ?? 0,
             'rendement_moyen' => 0,
             'agriculteurs_actifs' => \App\Models\User::where('role', 'client')->where('is_active', true)->count(),
             'parcelles_actives' => \App\Models\Parcelle::count(),
@@ -147,9 +149,9 @@ class ManagementController extends Controller
 
         $topFarmers = \App\Models\User::where('role', 'client')
             ->where('is_active', true)
-            ->with(['recoltes', 'parcelles', 'stocks'])
+            ->with(['recoltes' => fn($q) => $q->where('saison', $saison), 'parcelles', 'stocks'])
             ->get()
-            ->map(function ($client) {
+            ->map(function ($client) use ($saison) {
                 $totalRecolte = $client->recoltes->sum('quantite');
                 $surface = $client->parcelles->sum('surface');
                 $rendement = $surface > 0 ? ($totalRecolte / $surface) : 0;
@@ -180,7 +182,7 @@ class ManagementController extends Controller
 
         $atRiskFarmers = \App\Models\User::where('role', 'client')
             ->where('is_active', true)
-            ->with(['stocks', 'recoltes', 'visites'])
+            ->with(['stocks', 'recoltes' => fn($q) => $q->where('saison', $saison), 'visites'])
             ->get()
             ->filter(function ($client) {
                 $criticalStocks = $client->stocks->where('quantite_actuelle', '<=', 'seuil_critique')->count();
@@ -215,13 +217,14 @@ class ManagementController extends Controller
         if ($atRiskFarmers->count() > 0) {
             $recommendations[] = ['type' => 'danger', 'message' => "{$atRiskFarmers->count()} agriculteur(s) nécessitent une attention particulière"];
         }
-        $maizePerformance = \App\Models\Recolte::where('culture', 'Maïs')->avg('quantite') ?? 0;
-        $rizPerformance = \App\Models\Recolte::where('culture', 'Riz')->avg('quantite') ?? 0;
+        $maizePerformance = \App\Models\Recolte::where('saison', $saison)->where('culture', 'Maïs')->avg('quantite') ?? 0;
+        $rizPerformance = \App\Models\Recolte::where('saison', $saison)->where('culture', 'Riz')->avg('quantite') ?? 0;
         if ($maizePerformance < $rizPerformance) {
             $recommendations[] = ['type' => 'warning', 'message' => "Les rendements du maïs sont en baisse comparés au riz"];
         }
 
-        $productionByMonthQuery = \App\Models\Recolte::selectRaw('MONTH(date_recolte) as mois, SUM(quantite) as total')
+        $productionByMonthQuery = \App\Models\Recolte::where('saison', $saison)
+            ->selectRaw('MONTH(date_recolte) as mois, SUM(quantite) as total')
             ->groupBy('mois')
             ->orderBy('mois')
             ->get();
@@ -243,7 +246,8 @@ class ManagementController extends Controller
             'total' => $row->total,
         ]);
 
-        $revenusByMonth = \App\Models\Recolte::selectRaw('MONTH(date_recolte) as mois, SUM(revenu_total) as total')
+        $revenusByMonth = \App\Models\Recolte::where('saison', $saison)
+            ->selectRaw('MONTH(date_recolte) as mois, SUM(revenu_total) as total')
             ->groupBy('mois')
             ->orderBy('mois')
             ->get()
@@ -252,7 +256,8 @@ class ManagementController extends Controller
                 'total' => (float) $row->total,
             ]);
 
-        $performanceByCulture = \App\Models\Recolte::selectRaw('culture, SUM(quantite) as total_qte, AVG(benefice_net) as avg_benefice')
+        $performanceByCulture = \App\Models\Recolte::where('saison', $saison)
+            ->selectRaw('culture, SUM(quantite) as total_qte, AVG(benefice_net) as avg_benefice')
             ->groupBy('culture')
             ->get()
             ->map(fn($row) => (object)[
@@ -322,7 +327,8 @@ class ManagementController extends Controller
             'dominant_region' => $farmersByRegion->sortByDesc('total')->first()?->location ?? 'N/A',
         ];
 
-        $rendementByMonth = \App\Models\Recolte::selectRaw('MONTH(recoltes.date_recolte) as mois, CAST(SUM(recoltes.quantite) / NULLIF(SUM(parcelles.surface), 0) AS DECIMAL(10,2)) as avg_rendement')
+        $rendementByMonth = \App\Models\Recolte::where('recoltes.saison', $saison)
+            ->selectRaw('MONTH(recoltes.date_recolte) as mois, CAST(SUM(recoltes.quantite) / NULLIF(SUM(parcelles.surface), 0) AS DECIMAL(10,2)) as avg_rendement')
             ->join('parcelles', 'recoltes.parcelle_id', '=', 'parcelles.id')
             ->where('parcelles.surface', '>', 0)
             ->groupBy('mois')
@@ -351,7 +357,7 @@ class ManagementController extends Controller
             }
         }
 
-        $coutTotal = \App\Models\Recolte::sum('couts_totaux') ?? 0;
+        $coutTotal = \App\Models\Recolte::where('saison', $saison)->sum('couts_totaux') ?? 0;
         $margeGlobale = $stats['revenus_totaux'] - $coutTotal;
         $revenuTotal = $stats['revenus_totaux'] ?? 0;
         $beneficeNet = $revenuTotal - $coutTotal;
@@ -381,7 +387,8 @@ class ManagementController extends Controller
             'coutTotal',
             'margeGlobale',
             'revenuTotal',
-            'beneficeNet'
+            'beneficeNet',
+            'saison'
         ));
     }
 

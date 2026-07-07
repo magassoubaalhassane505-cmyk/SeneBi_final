@@ -15,7 +15,7 @@ class DemoUsersSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'mimi.manager@senebi.ml'],
             [
-                'name' => 'Mimi Manager',
+                'name' => 'Maimouna Touré',
                 'password' => bcrypt('manager123'),
                 'role' => 'manager',
                 'saison' => '2026',
@@ -27,7 +27,7 @@ class DemoUsersSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'sidi@sidi-agri.ml'],
             [
-                'name' => 'Sidi',
+                'name' => 'Sidi Keita',
                 'password' => 'client123',
                 'role' => 'client',
                 'saison' => '2026',

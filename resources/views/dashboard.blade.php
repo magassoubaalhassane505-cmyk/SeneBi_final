@@ -682,6 +682,7 @@ Tous les indicateurs sont bons.
         culturesData: {{ \Illuminate\Support\Js::from($productionParCulture->pluck('total_quantite')) }},
         alertesParType: {{ \Illuminate\Support\Js::from($alertesParType) }},
       };
+      window.SeneBI_REGIONS_DATA = {{ \Illuminate\Support\Js::from($regionsData) }};
     </script>
     
     <!-- Script d'automatisation du Dashboard Manager -->
@@ -712,7 +713,7 @@ Tous les indicateurs sont bons.
         if (productionCtx && window.Chart) {
           const labels = data.culturesLabels || [];
           const values = data.culturesData || [];
-          new Chart(productionCtx, {
+          window.productionChartInstance = new Chart(productionCtx, {
             type: 'bar',
             data: {
               labels,
@@ -742,7 +743,7 @@ Tous les indicateurs sont bons.
           if (map.stock_critique) { labels.push('Stock critique'); values.push(map.stock_critique); colors.push('#ef4444'); }
           if (map.faible_rentabilite) { labels.push('Faible rentabilité'); values.push(map.faible_rentabilite); colors.push('#f59e0b'); }
           if (map.faible_activite) { labels.push('Faible activité'); values.push(map.faible_activite); colors.push('#3b82f6'); }
-          new Chart(alertsCtx, {
+          window.alertsChartInstance = new Chart(alertsCtx, {
             type: 'doughnut',
             data: {
               labels,

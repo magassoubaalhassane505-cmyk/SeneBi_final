@@ -175,6 +175,87 @@ class DashboardController extends Controller
             $recommendations[] = ['type' => 'info', 'message' => "Aucune récolte enregistrée cette saison"];
         }
 
+        // Calculer les données régionales dynamiquement
+        $regions = [
+            'bko' => 'Bamako',
+            'kay' => 'Kayes',
+            'kou' => 'Koulikoro',
+            'seg' => 'Ségou',
+            'sik' => 'Sikasso',
+            'mop' => 'Mopti',
+            'tom' => 'Tombouctou',
+            'gao' => 'Gao',
+            'kid' => 'Kidal'
+        ];
+        
+        $regionsData = [];
+        
+        // Entrée spéciale "Toutes les régions" (all)
+        $regionsData['all'] = [
+            'name' => 'Toutes les régions',
+            'totalHarvest' => $totalQuantiteRecoltee ?? 0,
+            'ca' => $totalCA ?? 0,
+            'hectares' => round($totalSurface ?? 0, 1),
+            'rendement' => $totalSurface > 0 ? round(($totalQuantiteRecoltee ?? 0) / $totalSurface, 2) : 0,
+            'activeFarmers' => $activeClients ?? 0,
+            'cultures' => $productionParCulture->map(fn($row) => [
+                'name' => $row->culture,
+                'amount' => (float) $row->total_quantite,
+            ])->values()->all(),
+            'alertesParType' => $alertesParType,
+        ];
+        
+        foreach ($regions as $key => $name) {
+            $regionSurface = Parcelle::where('region', $name)->sum('surface') ?? 0;
+            $regionHarvest = Recolte::whereHas('parcelle', fn($q) => $q->where('region', $name))->sum('quantite') ?? 0;
+            $regionCA = Recolte::whereHas('parcelle', fn($q) => $q->where('region', $name))->sum('revenu_total') ?? 0;
+            $regionRend = $regionSurface > 0 ? $regionHarvest / $regionSurface : 0;
+            
+            $regionFarmers = User::where('role', 'client')
+                ->where('is_active', true)
+                ->where('status', 'approved')
+                ->where('location', $name)
+                ->count();
+                
+            $regionCultures = Recolte::whereHas('parcelle', fn($q) => $q->where('region', $name))
+                ->select('culture', \Illuminate\Support\Facades\DB::raw('SUM(quantite) as total_quantite'))
+                ->groupBy('culture')
+                ->get()
+                ->map(fn($row) => [
+                    'name' => $row->culture,
+                    'amount' => (float) $row->total_quantite,
+                ])->values()->all();
+                
+            $regionAlertes = [
+                'stock_critique' => Stock::whereHas('user', fn($q) => $q->where('location', $name))
+                    ->whereColumn('quantite_actuelle', '<=', 'seuil_critique')
+                    ->count(),
+                'faible_rentabilite' => User::where('role', 'client')
+                    ->where('is_active', true)
+                    ->where('status', 'approved')
+                    ->where('location', $name)
+                    ->whereHas('recoltes', fn($q) => $q->where('benefice_net', '<', 0))
+                    ->count(),
+                'faible_activite' => User::where('role', 'client')
+                    ->where('is_active', true)
+                    ->where('status', 'approved')
+                    ->where('location', $name)
+                    ->whereHas('visites', fn($q) => $q->where('date_visite', '<', now()->subMonths(2)))
+                    ->count(),
+            ];
+            
+            $regionsData[$key] = [
+                'name' => $name,
+                'totalHarvest' => (float) $regionHarvest,
+                'ca' => (float) $regionCA,
+                'hectares' => round((float) $regionSurface, 1),
+                'rendement' => round((float) $regionRend, 2),
+                'activeFarmers' => $regionFarmers,
+                'cultures' => $regionCultures,
+                'alertesParType' => $regionAlertes,
+            ];
+        }
+
         return view('dashboard', compact(
             'totalUsers',
             'activeClients',
@@ -193,7 +274,8 @@ class DashboardController extends Controller
             'recentActivities',
             'recommendations',
             'productionParCulture',
-            'alertesParType'
+            'alertesParType',
+            'regionsData'
         ));
     }
 }

@@ -40,6 +40,13 @@
                 <p>Centre de Business Intelligence agricole — Données en temps réel MySQL</p>
             </div>
             <div class="head-actions">
+                <div class="season-selector-wrapper" style="display: inline-flex; align-items: center; gap: 8px; margin-right: 12px;">
+                    <label for="seasonSelect" style="font-weight: 700; font-size: 13px; color: #64748b;">Saison</label>
+                    <select id="seasonSelect" class="btn-pill" style="background: #fff; color: #0b1220; border: 1px solid #e2e8f0; padding: 10px 16px; font-weight: 600; cursor: pointer; border-radius: 9999px; outline: none;" onchange="window.location.href='?saison='+this.value">
+                        <option value="2026" {{ $saison == '2026' ? 'selected' : '' }}>2026</option>
+                        <option value="2024" {{ $saison == '2024' ? 'selected' : '' }}>2024</option>
+                    </select>
+                </div>
                 <button class="btn-pill" id="exportPdfBtn" type="button">
                     <i class="fas fa-file-pdf" style="color:#ef4444;margin-right:6px"></i>Export PDF
                 </button>
