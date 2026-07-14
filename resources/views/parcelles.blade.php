@@ -301,11 +301,6 @@
           <h2 class="panel-title">Nouvelle Récolte</h2>
 
           <form class="panel-form" id="harvestForm">
-            <div class="panel-field">
-                <label for="client-name">Nom du client</label>
-                <input id="client-name" type="text" placeholder="Ex: Sidi, Aminata, Mamadou" required />
-              </div>
-              
               <div class="panel-field">
                 <label for="parcelle-recoltee">Parcelle</label>
                 <select id="parcelle-recoltee" required>
@@ -353,6 +348,7 @@
         apiBase: @json(url('/client/api')),
         parcelles: @json($parcelles),
         parcelleStats: @json($parcelleStats ?? collect()),
+        user: @json(Auth::user() ? ['id' => Auth::user()->id, 'name' => Auth::user()->name] : null),
       };
     </script>
     <script src="{{ asset('assets/js/layout.js') }}"></script>
@@ -433,90 +429,72 @@
         // INTERCEPTER LA SOUMISSION DU FORMULAIRE DE RÉCOLTE
         const harvestForm = document.getElementById('harvestForm');
         if (harvestForm) {
-          // Remplacer l'événement submit par notre fonction personnalisée
-          harvestForm.addEventListener('submit', function(e) {
+          harvestForm.addEventListener('submit', async function(e) {
             e.preventDefault(); // Empêcher la soumission normale
-            
-            // Récupérer les valeurs du formulaire avec les nouveaux IDs
-            const clientName = document.getElementById('client-name')?.value || '';
-            const parcelle = document.getElementById('parcelle-recoltee')?.value || '';
+
+            const parcelleSelect = document.getElementById('parcelle-recoltee');
+            const parcelleId = parcelleSelect ? parcelleSelect.value : '';
             const date = document.getElementById('date-recolte')?.value || '';
             const quantite = document.getElementById('quantite-recoltee')?.value || '';
-            
-            // Validation
-            if (!clientName || !parcelle || !date || !quantite || quantite <= 0) {
+
+            // Validation (sans le champ "Nom du client" : l'utilisateur est déjà authentifié)
+            if (!parcelleId || !date || !quantite || quantite <= 0) {
               alert('Veuillez remplir tous les champs correctement.');
               return;
             }
-            
-            // Créer l'objet de données de récolte
+
+            // Récupérer les informations réelles de la parcelle depuis la base (SeneBI_SERVER.parcelles)
+            const parcelleData = (window.SeneBI_SERVER?.parcelles || []).find(p => String(p.id) === String(parcelleId)) || {};
+            const surface = parseFloat(parcelleData.surface || 0);
+            const rendement = surface > 0 ? (parseFloat(quantite) / surface) : 0;
+
+            // Créer l'objet de données de récolte (lié à l'agriculteur connecté + à la parcelle)
             const harvestData = {
-              client: clientName, // Nom du client dynamique
-              parcelle: parcelle,
+              client: window.SeneBI_SERVER?.user?.name || '',
+              parcelle: parcelleId,
               date: date,
               quantite: parseFloat(quantite),
-              culture: getCultureFromParcelle(parcelle), // Fonction helper
-              rendementEstime: calculateRendementEstime(parcelle, parseFloat(quantite)) // Fonction helper
+              culture: parcelleData.culture || '',
+              surface: surface,
+              rendementEstime: rendement,
             };
-            
+
             // Sauvegarder dans le localStorage partagé (pour compatibilité)
             const successLocal = saveHarvestToSharedStorage(harvestData);
-            
-            // Sauvegarder dans la base de données via API
+
+            // Sauvegarder dans la base de données via API (lié à la parcelle + utilisateur connecté)
             const apiSuccess = await saveHarvestToDatabase(harvestData);
-            
+
             if (apiSuccess || successLocal) {
-              // Afficher un message de succès
-              showSuccessMessage('Récolte enregistrée avec succès ! Données transmises au manager SeneBI.');
-              
+              showSuccessMessage('Récolte enregistrée avec succès ! Statistiques mises à jour.');
+
               // Réinitialiser le formulaire
               harvestForm.reset();
-              
+
               // Fermer le panneau de récolte
               const harvestPanel = document.getElementById('harvestPanel');
               if (harvestPanel) {
                 harvestPanel.setAttribute('aria-hidden', 'true');
+                harvestPanel.classList.remove('show');
                 harvestPanel.style.display = 'none';
               }
-              
-              // Mettre à jour l'affichage des parcelles si nécessaire
-              setTimeout(() => {
-                if (window.refreshParcelsList) {
-                  window.refreshParcelsList();
-                }
-              }, 500);
+
+              // Rafraîchir les parcelles et leurs statistiques (quantité, rendement, production, rentabilité)
+              if (typeof window.SeneBI_refreshParcelles === 'function') {
+                window.SeneBI_refreshParcelles();
+              }
             } else {
-              alert('Erreur lors de l\'enregistrement de la récolte. Veuillez réessayer.');
+              alert("Erreur lors de l'enregistrement de la récolte. Veuillez réessayer.");
             }
           });
         }
-        
-        // FONCTION HELPER : Obtenir la culture depuis la parcelle
-        function getCultureFromParcelle(parcelleName) {
-          // Logique pour déterminer la culture basée sur le nom de la parcelle
-          if (parcelleName.toLowerCase().includes('riz') || parcelleName.toLowerCase().includes('nord')) {
-            return 'Riz';
-          } else if (parcelleName.toLowerCase().includes('mais') || parcelleName.toLowerCase().includes('sud')) {
-            return 'Maïs';
-          } else if (parcelleName.toLowerCase().includes('coton') || parcelleName.toLowerCase().includes('centre')) {
-            return 'Coton';
-          }
-          return 'Non spécifiée';
+
+        // FONCTION HELPER : Obtenir les données réelles d'une parcelle par son id
+        function getParcelleDataById(parcelleId) {
+          const parcelles = window.SeneBI_SERVER?.parcelles || [];
+          return parcelles.find(p => String(p.id) === String(parcelleId)) || null;
         }
-        
-        // FONCTION HELPER : Calculer le rendement estimé
-        function calculateRendementEstime(parcelleName, quantite) {
-          // Surface estimée par parcelle (à adapter selon vos données)
-          const surfaceEstimee = {
-            'Parcelle Nord': 5.5,
-            'Parcelle Centre': 6.0,
-            'Parcelle Sud': 3.2
-          };
-          
-          const surface = surfaceEstimee[parcelleName] || 5.0; // Valeur par défaut
-          return surface > 0 ? (quantite / surface).toFixed(2) : 0;
-        }
-        
+
         // FONCTION D'AFFICHAGE DU MESSAGE DE SUCCÈS
         function showSuccessMessage(message) {
           // Créer l'élément de message

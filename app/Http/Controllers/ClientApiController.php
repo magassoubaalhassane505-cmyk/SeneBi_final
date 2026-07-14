@@ -16,9 +16,122 @@ class ClientApiController extends Controller
 {
     public function parcellesIndex()
     {
-        $parcelles = Auth::user()->parcelles()->orderBy('nom')->get();
+        $user = Auth::user();
+        $parcelles = $user->parcelles()
+            ->with(['recoltes', 'visites', 'intrantsConsommes.stock', 'photos'])
+            ->orderBy('nom')
+            ->get();
 
-        return response()->json(['data' => $parcelles]);
+        $data = $parcelles->map(function ($p) use ($user) {
+            return array_merge(
+                $p->toArray(),
+                $this->computeParcelStats($p, $user)
+            );
+        });
+
+        return response()->json(['data' => $data]);
+    }
+
+    /**
+     * Calcule les statistiques dynamiques d'une parcelle a partir des donnees reelles
+     * (recoltes, visites, intrants consommes, stocks, date de semis).
+     */
+    protected function computeParcelStats(\App\Models\Parcelle $p, $user)
+    {
+        $recoltesCount = $p->recoltes()->count();
+        $recoltesTotal = $p->recoltes()->sum('quantite');
+        $surface = (float) $p->surface;
+        $rendement = $surface > 0 ? ($recoltesTotal / $surface) : 0;
+        $benefice = $p->recoltes()->sum('benefice_net');
+        $visites = $p->visites()->count();
+        $intrantsCount = $p->intrantsConsommes()->count();
+        $stockScore = 0;
+
+        $stocks = Stock::where('user_id', $user->id)->get();
+        foreach ($stocks as $stock) {
+            $ratio = $stock->seuil_critique > 0 ? ($stock->quantite_actuelle / $stock->seuil_critique) : 1;
+            $stockScore += $ratio;
+        }
+        $stockScore = $stocks->count() > 0 ? $stockScore / $stocks->count() : 0.5;
+
+        $score = 0;
+        if ($rendement >= 1.0) $score += 40;
+        elseif ($rendement >= 0.5) $score += 25;
+        else $score += 10;
+
+        if ($benefice >= 500000) $score += 30;
+        elseif ($benefice >= 0) $score += 15;
+        else $score += 0;
+
+        $score += $stockScore * 30;
+
+        if ($visites >= 2) $score += 10;
+
+        if ($score >= 80) {
+            $badge = 'Excellent';
+            $badgeClass = 'perf-badge excellent';
+        } elseif ($score >= 50) {
+            $badge = 'Bon';
+            $badgeClass = 'perf-badge moyen';
+        } elseif ($score >= 30) {
+            $badge = 'Moyen';
+            $badgeClass = 'perf-badge moyen';
+        } else {
+            $badge = 'Critique';
+            $badgeClass = 'perf-badge risque';
+        }
+
+        $plantingDate = $p->planting_date;
+        $plantingDateFr = null;
+        if ($plantingDate) {
+            $plantingDateFr = $plantingDate instanceof \DateTime
+                ? $plantingDate->format('d/m/Y')
+                : date('d/m/Y', strtotime($plantingDate));
+        }
+
+        $cultureDuration = 0;
+        if ($plantingDate) {
+            $end = $p->recoltes()->latest()->first()?->date_recolte ?? now();
+            if ($end instanceof \DateTime) {
+                $cultureDuration = $plantingDate instanceof \DateTime
+                    ? $plantingDate->diffInDays($end)
+                    : (int) round((strtotime($end->format('Y-m-d')) - strtotime($plantingDate)) / 86400);
+            }
+        }
+
+        $productionEstimee = $recoltesTotal > 0 ? $recoltesTotal * 1.1 : 0;
+
+        $status = $p->status ?: 'En culture';
+        $cost = $p->cost;
+
+        return [
+            'id' => $p->id,
+            'nom' => $p->nom,
+            'culture' => $p->culture,
+            'surface' => $surface,
+            'rendement' => round($rendement, 2),
+            'benefice' => round($benefice, 0),
+            'badge' => $badge,
+            'badgeClass' => $badgeClass,
+            'recoltesCount' => $recoltesCount,
+            'intrantsCount' => $intrantsCount,
+            'visitesCount' => $visites,
+            'lastHarvestDate' => $p->recoltes()->latest()->first()?->date_recolte?->format('Y-m-d') ?? null,
+            'lastHarvestQty' => $recoltesTotal,
+            'cultureDuration' => $cultureDuration,
+            'productionEstimee' => $productionEstimee,
+            'latitude' => $p->latitude,
+            'longitude' => $p->longitude,
+            'last_irrigation' => $p->last_irrigation,
+            'last_traitement' => $p->last_traitement,
+            'next_intervention' => $p->next_intervention,
+            'photos' => $p->photos,
+            'plantingDate' => $plantingDateFr,
+            'status' => $status,
+            'growth' => $p->growth,
+            'cost' => $cost,
+            'journal' => $p->journal,
+        ];
     }
 
     public function parcellesStore(Request $request)

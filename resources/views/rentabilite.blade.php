@@ -1492,9 +1492,10 @@ if (profitElement) {
                ]);
                if (rows.length === 0) {
                  rows.push(['Aucune donnée', '-', '-', '0 FCFA']);
-              
-              rows.forEach((row, index) => {
-                const y = tableStartY + 17 + (index * 15);
+               }
+               
+                rows.forEach((row, index) => {
+                  const y = tableStartY + 17 + (index * 15);
                 if (index % 2 === 0) {
                   doc.setFillColor(248, 250, 252);
                   doc.rect(25, y - 6, 165, 12, 'F'); // Rectangle décalé pour la barre
@@ -1579,6 +1580,11 @@ if (profitElement) {
         //   Ce setTimeout écrasait aussi vos nouvelles valeurs du calculateur
         //   Maintenant seule applyCalculatorToBilan() gère les KPI
         // }, 500); // DÉSACTIVÉ
+
+        // Calcul initial du calculateur
+        if (typeof performCalculations === 'function') {
+          performCalculations();
+        }
         </script>
 
         <section class="kpi-grid">

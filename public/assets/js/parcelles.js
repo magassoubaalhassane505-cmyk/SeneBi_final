@@ -21,53 +21,6 @@
   }
 
   function renderParcelsList(uiParcels, list) {
-    const demoHarvests = [
-      { parcelId: "PN", date: "2025-11-15", quantityKg: 22000 },
-      { parcelId: "PS", date: "2026-02-20", quantityKg: 0 },
-      { parcelId: "PC", date: "2025-12-10", quantityKg: 18000 },
-    ];
-
-    const lastHarvestByParcel = new Map();
-    for (const h of demoHarvests) {
-      const prev = lastHarvestByParcel.get(h.parcelId);
-      if (!prev || prev.date < h.date) lastHarvestByParcel.set(h.parcelId, h);
-    }
-
-    const activityJournal = {
-      "BKO-N1": [{ label: "Dernier arrosage", value: "Hier (14 h)" }, { label: "Engrais applique", value: "08/04/2026 (NPK)" }],
-      "BKO-S1": [{ label: "Dernier arrosage", value: "Il y a 2 jours" }, { label: "Engrais applique", value: "20/03/2026" }],
-      "BKO-C1": [{ label: "Dernier arrosage", value: "Aujourd'hui (matin)" }, { label: "Engrais applique", value: "12/04/2026" }],
-      "KAY-N1": [{ label: "Dernier arrosage", value: "Hier (18 h)" }, { label: "Engrais applique", value: "05/04/2026 (Ureea)" }],
-      "KAY-S1": [{ label: "Dernier arrosage", value: "— (jachere)" }, { label: "Derniere intervention", value: "10/02/2026" }],
-      "KAY-E1": [{ label: "Dernier arrosage", value: "Il y a 4 jours" }, { label: "Engrais applique", value: "18/03/2026" }],
-      "KOU-N1": [{ label: "Dernier arrosage", value: "Hier (15 h)" }, { label: "Engrais applique", value: "02/04/2026 (NPK)" }],
-      "KOU-S1": [{ label: "Dernier arrosage", value: "Aujourd'hui (matin)" }, { label: "Engrais applique", value: "15/04/2026" }],
-      "KOU-C1": [{ label: "Dernier arrosage", value: "Il y a 3 jours" }, { label: "Engrais applique", value: "25/03/2026" }],
-      "SEG-N1": [{ label: "Dernier arrosage", value: "Hier (16 h)" }, { label: "Engrais applique", value: "06/04/2026 (Complexe)" }],
-      "SEG-S1": [{ label: "Dernier arrosage", value: "— (jachere)" }, { label: "Derniere intervention", value: "05/02/2026" }],
-      "SEG-E1": [{ label: "Dernier arrosage", value: "Il y a 5 jours" }, { label: "Engrais applique", value: "20/03/2026" }],
-      "SIK-N1": [{ label: "Dernier arrosage", value: "Hier (13 h)" }, { label: "Engrais applique", value: "09/04/2026 (NPK)" }],
-      "SIK-S1": [{ label: "Dernier arrosage", value: "Aujourd'hui (matin)" }, { label: "Engrais applique", value: "18/04/2026" }],
-      "SIK-C1": [{ label: "Dernier arrosage", value: "Il y a 2 jours" }, { label: "Engrais applique", value: "12/03/2026" }],
-      "MOP-N1": [{ label: "Dernier arrosage", value: "Hier (17 h)" }, { label: "Engrais applique", value: "07/04/2026 (Ureea)" }],
-      "MOP-S1": [{ label: "Dernier arrosage", value: "Il y a 3 jours" }, { label: "Engrais applique", value: "24/03/2026" }],
-      "MOP-E1": [{ label: "Dernier arrosage", value: "— (jachere)" }, { label: "Derniere intervention", value: "12/02/2026" }],
-      "TOM-N1": [{ label: "Dernier arrosage", value: "Hier (19 h)" }, { label: "Engrais applique", value: "04/04/2026 (Complexe)" }],
-      "TOM-S1": [{ label: "Dernier arrosage", value: "Il y a 4 jours" }, { label: "Engrais applique", value: "28/03/2026" }],
-      "TOM-E1": [{ label: "Dernier arrosage", value: "Aujourd'hui (soir)" }, { label: "Engrais applique", value: "20/04/2026" }],
-      "GAO-N1": [{ label: "Dernier arrosage", value: "Hier (16 h)" }, { label: "Engrais applique", value: "11/04/2026 (NPK)" }],
-      "GAO-S1": [{ label: "Dernier arrosage", value: "— (jachere)" }, { label: "Derniere intervention", value: "08/02/2026" }],
-      "GAO-E1": [{ label: "Dernier arrosage", value: "Il y a 5 jours" }, { label: "Engrais applique", value: "30/03/2026" }],
-      "KID-N1": [{ label: "Dernier arrosage", value: "Hier (18 h)" }, { label: "Engrais applique", value: "13/04/2026 (Ureea)" }],
-      "KID-S1": [{ label: "Dernier arrosage", value: "Il y a 6 jours" }, { label: "Engrais applique", value: "02/04/2026" }],
-      "KID-E1": [{ label: "Dernier arrosage", value: "— (jachere)" }, { label: "Derniere intervention", value: "15/02/2026" }],
-      PN: [{ label: "Dernier arrosage", value: "Hier (16 h)" }, { label: "Engrais applique", value: "10/04/2026 (NPK)" }],
-      PS: [{ label: "Dernier arrosage", value: "Il y a 3 jours" }, { label: "Engrais applique", value: "22/03/2026" }],
-      PE: [{ label: "Dernier arrosage", value: "Aujourd'hui (matin)" }, { label: "Engrais applique", value: "05/04/2026" }],
-      PO: [{ label: "Dernier arrosage", value: "— (jachere)" }, { label: "Derniere intervention", value: "01/02/2026" }],
-      PC: [{ label: "Dernier arrosage", value: "Hier" }, { label: "Engrais applique", value: "28/03/2026" }],
-    };
-
     const badgeClass = (st) => (st === "En culture" ? "green" : st === "Récoltée" ? "blue" : "yellow");
 
     if (!uiParcels.length) {
@@ -79,12 +32,13 @@
 
     list.innerHTML = uiParcels
       .map((p) => {
-        const h = lastHarvestByParcel.get(p.id);
-        const hasHarvest = h && Number(h.quantityKg || 0) > 0;
-        const yieldKgHa = hasHarvest ? Number(h.quantityKg) / Number(p.areaHa || 1) : null;
-        const dateFr = h?.date ? new Date(h.date).toLocaleDateString("fr-FR") : null;
-        const journal = activityJournal[p.id] || [];
-        const journalHtml = journal.map((j) => `<li class="parcel-journal-item"><span class="parcel-journal-k">${j.label}</span><span class="parcel-journal-v">${j.value}</span></li>`).join("");
+        const hasHarvest = p.lastHarvestQty && Number(p.lastHarvestQty || 0) > 0;
+        const yieldKgHa = hasHarvest ? Number(p.lastHarvestQty) / Number(p.areaHa || 1) : null;
+        const dateFr = p.lastHarvestDate ? new Date(p.lastHarvestDate).toLocaleDateString("fr-FR") : null;
+        const journal = Array.isArray(p.journal) ? p.journal : [];
+        const journalHtml = journal.length
+          ? journal.map((j) => `<li class="parcel-journal-item"><span class="parcel-journal-k">${j.label}</span><span class="parcel-journal-v">${j.value}</span></li>`).join("")
+          : '<li class="parcel-journal-item"><span class="parcel-journal-k">Aucune activité</span><span class="parcel-journal-v">—</span></li>';
 
         const photosHtml = p.photos && p.photos.length > 0
           ? `<div class="parcel-photos-gallery" style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
@@ -127,7 +81,7 @@
                 <div class="kv"><div class="k">Surface</div><div class="v">${fmtHectaresWord(p.areaHa)}</div></div>
                 <div class="kv"><div class="k">Dernière récolte</div><div class="v">${dateFr || "—"}</div></div>
 
-                <div class="kv"><div class="k">Quantité</div><div class="v">${hasHarvest ? fmtKg(h.quantityKg) : "—"}</div></div>
+                <div class="kv"><div class="k">Quantité</div><div class="v">${hasHarvest ? fmtKg(p.lastHarvestQty) : "—"}</div></div>
                 <div class="kv"><div class="k">Récoltes</div><div class="v">${p.recoltesCount || 0}</div></div>
                 <div class="kv"><div class="k">Intrants</div><div class="v">${p.intrantsCount || 0}</div></div>
                 <div class="kv"><div class="k">Visites</div><div class="v">${p.visitesCount || 0}</div></div>
@@ -184,9 +138,9 @@
     }
   }
 
-  function openMapModal(lat, lng, name) {
+  window.openMapModal = function (lat, lng, name) {
     alert(`Localisation de ${name}\nLatitude: ${lat}, Longitude: ${lng}\n(Fonctionnalité carte à implémenter)`);
-  }
+  };
 
   window.renderParcels = function () {
     const list = SeneBI.qs("#parcelsList");
@@ -238,26 +192,6 @@
         panel.setAttribute("aria-hidden", "true");
       });
     }
-    const form = SeneBI.qs("#harvestForm");
-    if (form && !form.dataset.bound) {
-      form.dataset.bound = "1";
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const parcelId = SeneBI.qs("#parcelle-recoltee").value;
-        const date = SeneBI.qs("#date-recolte").value;
-        const quantityKg = Number(SeneBI.qs("#quantite-recoltee").value);
-        if (!parcelId || !date || !Number.isFinite(quantityKg) || quantityKg <= 0) return;
-        form.reset();
-        const d = SeneBI.qs("#date-recolte");
-        if (d) d.valueAsDate = new Date();
-        if (panel) {
-          panel.classList.remove("show");
-          panel.setAttribute("aria-hidden", "true");
-        }
-      });
-      const d = SeneBI.qs("#date-recolte");
-      if (d && !d.value) d.valueAsDate = new Date();
-    }
   }
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -275,8 +209,12 @@
 
     const state = SeneBI.loadState();
     SeneBI.renderTopbar(state);
-    renderParcels();
     if (!readOnly) bindForm();
+    try {
+      renderParcels();
+    } catch (err) {
+      console.error("Erreur lors du rendu des parcelles:", err);
+    }
     window.addEventListener("senebi:seasonChanged", () => SeneBI.renderTopbar(state));
   });
 })();

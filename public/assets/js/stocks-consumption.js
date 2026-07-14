@@ -138,8 +138,8 @@ document.addEventListener("DOMContentLoaded", function() {
             ${isCritical 
               ? `<span class="badge critical">Critique (${Math.round((s.quantite_actuelle / s.seuil_critique) * 100)}%)</span>` 
               : (isLow 
-                  ? `<span class="badge warning">Faible (${Math.round((s.quantite_actuelle / (s.seuil_critique * 4)) * 100}%)</span>`
-                  : `<span class="badge ok">Normal (${Math.round((s.quantite_actuelle / (s.seuil_critique * 4)) * 100}%)</span>`)}
+                  ? `<span class="badge warning">Faible (${Math.round((s.quantite_actuelle / (s.seuil_critique * 4)) * 100)}%)</span>`
+                  : `<span class="badge ok">Normal (${Math.round((s.quantite_actuelle / (s.seuil_critique * 4)) * 100)}%)</span>`)}
           </td>
         </tr>
       `;
