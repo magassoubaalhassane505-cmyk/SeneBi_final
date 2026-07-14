@@ -1887,13 +1887,13 @@ if (profitElement) {
                 $cultureIcon = 'fa-leaf';
                 $cultureIconClass = 'culture-default';
                 if (str_contains($cultureName, 'riz')) {
-                  $cultureIcon = 'fa-bowl-rice';
+                  $cultureIcon = 'fa-wheat-awn';
                   $cultureIconClass = 'culture-riz';
                 } elseif (str_contains($cultureName, 'maïs') || str_contains($cultureName, 'mais')) {
                   $cultureIcon = 'fa-seedling';
                   $cultureIconClass = 'culture-mais';
                 } elseif (str_contains($cultureName, 'coton')) {
-                  $cultureIcon = 'fa-cloud-rain';
+                  $cultureIcon = 'fa-leaf';
                   $cultureIconClass = 'culture-coton';
                 } elseif (str_contains($cultureName, 'arachide')) {
                   $cultureIcon = 'fa-seedling';
@@ -2177,6 +2177,52 @@ if (profitElement) {
         });
       }
       
+      // 3. LIAISON PARCELLES → CALCULATEUR (mise a jour de la liste)
+      function syncCalculatorParcelOptions() {
+        window.addEventListener('storage', function(e) {
+          if (e.key === 'senebi_parcelles_sync' && e.newValue) {
+            try {
+              const data = JSON.parse(e.newValue);
+              if (data.parcels && Array.isArray(data.parcels)) {
+                updateCalculatorParcelOptions(data.parcels);
+              }
+            } catch (err) {
+              console.error('Erreur lors de la synchro parcelles:', err);
+            }
+          }
+        });
+      }
+
+      function updateCalculatorParcelOptions(parcels) {
+        const calcParcel = document.getElementById('calcParcel');
+        if (!calcParcel) return;
+
+        const currentValue = calcParcel.value;
+
+        while (calcParcel.options.length > 1) {
+          calcParcel.remove(1);
+        }
+
+        parcels.forEach(p => {
+          const option = document.createElement('option');
+          option.value = p.id;
+          option.setAttribute('data-culture', p.culture || '');
+          option.setAttribute('data-surface', p.surface || '');
+          option.textContent = p.nom;
+          calcParcel.appendChild(option);
+        });
+
+        if (currentValue && Array.from(calcParcel.options).some(o => o.value === currentValue)) {
+          calcParcel.value = currentValue;
+        } else {
+          calcParcel.value = '';
+          const event = new Event('change');
+          calcParcel.dispatchEvent(event);
+        }
+      }
+
+      window.updateCalculatorParcelOptions = updateCalculatorParcelOptions;
+
       // 3. CALCUL AUTOMATIQUE DE LA MARGE
       function updateProfitFromSalesAndCosts() {
         const salesKpi = document.getElementById('salesKpi');
@@ -2362,6 +2408,7 @@ if (profitElement) {
       document.addEventListener('DOMContentLoaded', function() {
         updateCostsFromStocks();
         updateSalesFromParcels();
+        syncCalculatorParcelOptions();
         
         // Générer le conseil IA toutes les 30 secondes
         generateAIAdvice();

@@ -10,214 +10,6 @@
   <link rel="stylesheet" href="{{ asset('assets/css/visual-harmony.css') }}" />
   <link rel="stylesheet" href="{{ asset('assets/css/region-filter.css') }}" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  
-  <!-- CSS pour Widget Météo -->
-    <style>
-        /* Widget Météo - Style intégré SeneBI */
-        .weather-widget {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 6px 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            margin-right: 12px;
-        }
-
-        .weather-widget:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-        }
-
-        .weather-content {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .weather-icon {
-            font-size: 16px;
-            color: #1a1d23; /* Couleur sombre comme le menu */
-        }
-
-        .weather-text {
-            font-size: 12px;
-            font-weight: 500;
-            color: #475569; /* Gris moderne */
-            white-space: nowrap;
-        }
-
-        /* Conseil du jour - Style vert émeraude */
-        .weather-advice {
-            margin-top: 8px;
-            font-size: 13px;
-            font-weight: bold;
-            color: #10b981; /* Vert émeraude comme le badge 'En culture' */
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            line-height: 1.4;
-        }
-
-        .weather-advice .advice-icon {
-            color: #10b981; /* Vert émeraude comme le texte */
-            font-size: 14px;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Bouton Appliquer Intrant - Style SeneBI moderne */
-        .apply-intrant-btn {
-            background: transparent;
-            border: 1.5px solid #00a65a;
-            color: #00a65a;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            padding: 6px 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            white-space: nowrap;
-        }
-
-        .apply-intrant-btn:hover {
-            background: #00a65a;
-            color: white;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 166, 90, 0.3);
-        }
-
-        .apply-intrant-btn:active {
-            transform: translateY(0);
-        }
-
-        /* Conteneur pour le bouton */
-        .parcel-actions {
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            z-index: 10;
-        }
-
-        /* CORRECTION : Position relative pour les cartes parcelles */
-        .parcel-card {
-            position: relative !important;
-        }
-        
-        /* Responsive pour petits écrans */
-        @media (max-width: 768px) {
-            .weather-widget {
-                margin-left: 0;
-                margin-top: 12px;
-                padding: 6px 12px;
-            }
-
-            .weather-text {
-                font-size: 12px;
-            }
-
-            .weather-icon {
-                font-size: 16px;
-            }
-
-            .weather-advice {
-                font-size: 13px;
-                margin-top: 8px;
-            }
-        }
-
-        /* Variations selon la météo */
-        .weather-widget.cloudy {
-            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
-            border-color: #64748b;
-        }
-
-        .weather-widget.cloudy .weather-text {
-            color: #1e293b;
-        }
-
-        .weather-widget.rainy {
-            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-            border-color: #0891b2;
-        }
-
-        .weather-widget.rainy .weather-text {
-            color: #164e63;
-        }
-
-        /* Barre de progression de croissance */
-        .parcel-growth {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 8px;
-            margin-bottom: 12px;
-        }
-
-        .growth-bar {
-            flex: 1;
-            height: 6px;
-            background: #f1f5f9; /* Fond gris très clair */
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .growth-fill {
-            height: 100%;
-            background: #10b981; /* Vert 'En culture' */
-            border-radius: 3px;
-            transition: width 0.3s ease;
-        }
-
-        .growth-text {
-            font-size: 12px;
-            color: #64748b; /* Gris */
-            font-weight: 500;
-            white-space: nowrap;
-        }
-
-        /* Indicateur de performance */
-        .performance-indicator {
-            margin-left: 6px;
-            cursor: help;
-            transition: transform 0.2s ease;
-        }
-
-        .performance-indicator:hover {
-            transform: scale(1.1);
-        }
-
-        .performance-indicator svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        /* Date de semis */
-        .planting-date {
-            font-size: 11px;
-            color: #64748b; /* Gris discret */
-            font-weight: 400;
-            margin-top: 2px;
-            line-height: 1.3;
-        }
-    </style>
   </head>
   <body data-page="parcels">
     <div class="app">
@@ -251,8 +43,7 @@
                 <option value="kid">Kidal</option>
               </select>
             </div>
-          </div>
-          <div class="hero-actions">
+
             <!-- Widget Météo Dynamique -->
             <div class="weather-widget" id="weatherWidget">
               <div class="weather-content">
@@ -264,7 +55,7 @@
             </div>
             
             <button class="action-btn" id="openHarvestBtn" type="button">
-              <span class="action-plus">+</span>
+              <i class="fas fa-calculator" aria-hidden="true"></i>
               <span>Saisir une récolte</span>
             </button>
           </div>
@@ -288,7 +79,12 @@
               </div>
               <div class="panel-field">
                 <label for="parcelCulture">Culture</label>
-                <input id="parcelCulture" type="text" placeholder="Ex: Riz" required />
+                <select id="parcelCulture" required>
+                  <option value="">Sélectionner une culture</option>
+                  <option value="Riz">Riz</option>
+                  <option value="Maïs">Maïs</option>
+                  <option value="Coton">Coton</option>
+                </select>
               </div>
             </div>
             <div class="panel-actions">

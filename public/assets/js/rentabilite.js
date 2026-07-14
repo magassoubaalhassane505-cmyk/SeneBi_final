@@ -604,40 +604,65 @@
           const baseName = nom.replace(/^Parcelle\s+/i, '').trim();
           acc[baseName] = {
             surface: Number(p.surface) || 0,
+            culture: p.culture || '',
             intrants: 0,
             other: 0
           };
           return acc;
         }, {})
       : {
-          'Parcelle Nord': { surface: 5.5, intrants: 2500000, other: 400000 },
-          'Parcelle Centre': { surface: 3.2, intrants: 1800000, other: 300000 },
-          'Parcelle Sud': { surface: 4.8, intrants: 3200000, other: 500000 }
+          'Parcelle Nord': { surface: 5.5, culture: 'Riz', intrants: 2500000, other: 400000 },
+          'Parcelle Centre': { surface: 3.2, culture: 'Maïs', intrants: 1800000, other: 300000 },
+          'Parcelle Sud': { surface: 4.8, culture: 'Coton', intrants: 3200000, other: 500000 }
         };
-    
+
+    const cultureYields = (window.SeneBI_RENTABILITE?.cultureYields || []).reduce((acc, cy) => {
+      if (cy.culture && cy.rendement) {
+        acc[cy.culture] = Number(cy.rendement) || 0;
+      }
+      return acc;
+    }, {});
+
+    const cultureDefaults = {
+      'Riz': { price: 250, intrantsFactor: 1.0, otherFactor: 1.0 },
+      'Maïs': { price: 180, intrantsFactor: 0.8, otherFactor: 0.9 },
+      'Coton': { price: 350, intrantsFactor: 1.3, otherFactor: 1.2 },
+    };
+
+    function getCultureFactor(cultureName) {
+      const key = Object.keys(cultureDefaults).find(k => cultureName.toLowerCase().includes(k.toLowerCase()));
+      return key ? cultureDefaults[key] : { price: 200, intrantsFactor: 1.0, otherFactor: 1.0 };
+    }
+
     // Fonction pour récupérer intelligemment les données de la parcelle
     function smartFillParcelleData(parcelleName, cultureName) {
-      const data = parcelleData[parcelleName];
-      if (data) {
-        // Adapter les coûts selon la culture
-        let adjustedIntrants = data.intrants;
-        let adjustedOther = data.other;
-        
-        if (cultureName === 'Riz') {
-          adjustedIntrants = data.intrants * 1.0; // Base
-          adjustedOther = data.other * 1.0;
-        } else if (cultureName === 'Maïs') {
-          adjustedIntrants = data.intrants * 0.8; // 20% moins cher
-          adjustedOther = data.other * 0.9;
-        } else if (cultureName === 'Coton') {
-          adjustedIntrants = data.intrants * 1.3; // 30% plus cher
-          adjustedOther = data.other * 1.2;
+      const selectedOption = calcParcel.options[calcParcel.selectedIndex];
+      const surface = selectedOption && selectedOption.dataset.surface ? Number(selectedOption.dataset.surface) : 0;
+      const parcelCulture = selectedOption && selectedOption.dataset.culture ? selectedOption.dataset.culture : cultureName;
+
+      if (surface > 0) {
+        calcArea.value = surface;
+        if (parcelCulture && !calcCulture.value) {
+          calcCulture.value = parcelCulture;
         }
-        
-        calcArea.value = data.surface;
-        calcIntrants.value = Math.round(adjustedIntrants);
-        calcOther.value = Math.round(adjustedOther);
       }
+
+      const factor = getCultureFactor(parcelCulture || cultureName);
+      const yieldPerHa = cultureYields[parcelCulture || cultureName] || 8;
+
+      if (surface > 0 && !calcQty.value) {
+        const estimatedQty = surface * yieldPerHa * 1000;
+        calcQty.value = Math.round(estimatedQty);
+      }
+
+      if (!calcPrice.value) {
+        calcPrice.value = factor.price;
+      }
+
+      const baseIntrants = 2000000;
+      const baseOther = 350000;
+      calcIntrants.value = Math.round(baseIntrants * factor.intrantsFactor);
+      calcOther.value = Math.round(baseOther * factor.otherFactor);
     }
     
     // Fonction d'animation de compteur ultra-esthétique avec fondu
@@ -865,6 +890,10 @@
     
     // Ajouter les écouteurs d'événements sur TOUS les champs pour le calcul en temps réel
     calcParcel.addEventListener('change', function() {
+      const selectedOption = this.options[this.selectedIndex];
+      if (selectedOption && selectedOption.dataset.culture) {
+        calcCulture.value = selectedOption.dataset.culture;
+      }
       const parcelleName = this.value;
       const cultureName = calcCulture.value;
       if (parcelleName && cultureName) {

@@ -43,6 +43,9 @@
         next_intervention: s.next_intervention || null,
         photos: s.photos || [],
         journal: s.journal || [],
+        cultureStatus: s.cultureStatus || 'Non renseigné',
+        cultureStatusIcon: s.cultureStatusIcon || 'fa-circle-question',
+        cultureStatusClass: s.cultureStatusClass || 'status-badge status-neutral',
       };
     });
   };
@@ -54,7 +57,69 @@
     cfg.parcelles = json.data || [];
     if (Array.isArray(cfg.parcelles)) cfg.parcelleStats = cfg.parcelles;
     if (typeof window.renderParcels === "function") window.renderParcels();
+    emitParcelSync(cfg.parcelles);
+    if (typeof window.updateCalculatorParcelOptions === "function") {
+      window.updateCalculatorParcelOptions(cfg.parcelles);
+    }
   }
+
+  function emitParcelSync(parcels) {
+    try {
+      localStorage.setItem("senebi_parcelles_sync", JSON.stringify({ parcels, timestamp: Date.now() }));
+    } catch (e) {
+      console.warn("Impossible d'emettre la synchro parcelles.", e);
+    }
+  }
+
+  window.addEventListener("storage", function (e) {
+    if (e.key === "senebi_parcelles_sync" && e.newValue) {
+      try {
+        const data = JSON.parse(e.newValue);
+        if (data.parcels && Array.isArray(data.parcels)) {
+          cfg.parcelles = data.parcels;
+          if (Array.isArray(cfg.parcelles)) cfg.parcelleStats = cfg.parcelles;
+          if (typeof window.renderParcels === "function") window.renderParcels();
+        }
+      } catch (err) {
+        console.error("Erreur lors de la mise a jour cross-tab des parcelles:", err);
+      }
+    }
+  });
+
+  async function updateParcelle(parcelleId, data) {
+    const res = await fetch(`${cfg.apiBase}/parcelles/${parcelleId}`, {
+      method: "PUT",
+      headers: csrfHeaders(),
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("Erreur API modification parcelle:", res.status, text);
+      alert("Impossible de modifier la parcelle.");
+      return null;
+    }
+    const result = await res.json();
+    await refreshParcelles();
+    return result.data;
+  }
+
+  async function deleteParcelle(parcelleId) {
+    const res = await fetch(`${cfg.apiBase}/parcelles/${parcelleId}`, {
+      method: "DELETE",
+      headers: csrfHeaders(),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("Erreur API suppression parcelle:", res.status, text);
+      alert("Impossible de supprimer la parcelle.");
+      return false;
+    }
+    await refreshParcelles();
+    return true;
+  }
+
+  window.SeneBI_updateParcelle = updateParcelle;
+  window.SeneBI_deleteParcelle = deleteParcelle;
 
   document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("addParcelForm");

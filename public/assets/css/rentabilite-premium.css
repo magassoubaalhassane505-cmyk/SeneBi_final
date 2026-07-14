@@ -384,18 +384,18 @@
 }
 
 .culture-icon-box.culture-riz {
-  background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
-  color: #b45309;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  color: #15803d;
 }
 
 .culture-icon-box.culture-coton {
-  background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
-  color: #0369a1;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  color: #15803d;
 }
 
 .culture-icon-box.culture-mais {
-  background: linear-gradient(135deg, #fef9c3 0%, #fef3c7 100%);
-  color: #a16207;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  color: #15803d;
 }
 
 .culture-icon-box.culture-arachide {

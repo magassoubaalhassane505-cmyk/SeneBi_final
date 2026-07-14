@@ -556,6 +556,47 @@ class ClientController extends Controller
         $status = $p->status ?: 'En culture';
         $cost = $p->cost;
 
+        $cultureStatus = 'Non renseigné';
+        $cultureStatusIcon = 'fa-circle-question';
+        $cultureStatusClass = 'status-badge status-neutral';
+
+        if ($recoltesCount === 0 && $intrantsCount === 0 && !$plantingDate) {
+            $cultureStatus = 'Non renseigné';
+            $cultureStatusIcon = 'fa-circle-question';
+            $cultureStatusClass = 'status-badge status-neutral';
+        } elseif ($status === 'En jachère') {
+            $cultureStatus = 'En jachère';
+            $cultureStatusIcon = 'fa-pause-circle';
+            $cultureStatusClass = 'status-badge status-neutral';
+        } elseif ($score >= 80) {
+            $cultureStatus = 'Bon';
+            $cultureStatusIcon = 'fa-check-circle';
+            $cultureStatusClass = 'status-badge status-good';
+        } elseif ($score >= 50) {
+            $cultureStatus = 'Bon';
+            $cultureStatusIcon = 'fa-check-circle';
+            $cultureStatusClass = 'status-badge status-good';
+        } elseif ($score >= 30) {
+            $cultureStatus = 'À surveiller';
+            $cultureStatusIcon = 'fa-exclamation-triangle';
+            $cultureStatusClass = 'status-badge status-warning';
+        } else {
+            $cultureStatus = 'Critique';
+            $cultureStatusIcon = 'fa-times-circle';
+            $cultureStatusClass = 'status-badge status-critical';
+        }
+
+        $nextIntervention = $p->next_intervention;
+        if ($nextIntervention && $cultureStatus !== 'Critique' && $cultureStatus !== 'En jachère') {
+            $nextInterventionDate = $nextIntervention instanceof \DateTime ? $nextIntervention : \Carbon\Carbon::parse($nextIntervention);
+            $daysToIntervention = now()->diffInDays($nextInterventionDate, false);
+            if ($daysToIntervention >= 0 && $daysToIntervention <= 14) {
+                $cultureStatus = 'Récolte proche';
+                $cultureStatusIcon = 'fa-clock';
+                $cultureStatusClass = 'status-badge status-harvest';
+            }
+        }
+
         return [
             'id' => $p->id,
             'nom' => $p->nom,
@@ -583,6 +624,9 @@ class ClientController extends Controller
             'growth' => $p->growth,
             'cost' => $cost,
             'journal' => $p->journal,
+            'cultureStatus' => $cultureStatus,
+            'cultureStatusIcon' => $cultureStatusIcon,
+            'cultureStatusClass' => $cultureStatusClass,
         ];
     }
 
