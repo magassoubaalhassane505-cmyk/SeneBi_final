@@ -55,7 +55,6 @@
     if (!res.ok) return;
     const json = await res.json();
     cfg.parcelles = json.data || [];
-    if (Array.isArray(cfg.parcelles)) cfg.parcelleStats = cfg.parcelles;
     if (typeof window.renderParcels === "function") window.renderParcels();
     emitParcelSync(cfg.parcelles);
     if (typeof window.updateCalculatorParcelOptions === "function") {
