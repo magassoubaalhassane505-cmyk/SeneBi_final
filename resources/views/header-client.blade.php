@@ -32,29 +32,29 @@
           </svg>
           <span>Dashboard</span>
         </a>
-        <a href="{{ url('/client/parcelles') }}" class="{{ request()->routeIs('client.parcelles') ? 'active' : '' }}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 21s7-4.5 7-11a7 7 0 0 0-14 0c0 6.5 7 11 7 11z"/>
-            <path d="M12 10a2 2 0 1 0 0-4 2 2 0 0 0 4z"/>
-          </svg>
-          <span>Parcelles</span>
-        </a>
-        <a href="{{ url('/client/rentabilite') }}" class="{{ request()->routeIs('client.rentabilite') ? 'active' : '' }}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
-            <path d="M12 7v10"/>
-            <path d="M9.5 9.5c.6-1 4.4-1 5 0"/>
-            <path d="M9.5 14.5c.6 1 4.4 1 5 0"/>
-          </svg>
-          <span>Rentabilité</span>
-        </a>
-        <a href="{{ url('/client/stocks') }}" class="{{ request()->routeIs('client.stocks') ? 'active' : '' }}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
-          </svg>
-          <span>Stocks</span>
-        </a>
+         <a href="{{ url('/client/parcelles') }}" class="{{ request()->routeIs('client.parcelles') ? 'active' : '' }}">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+             <path d="M12 21s7-4.5 7-11a7 7 0 0 0-14 0c0 6.5 7 11 7 11z"/>
+             <path d="M12 10a2 2 0 1 0 0-4 2 2 0 0 0 4z"/>
+           </svg>
+           <span>Parcelles</span>
+         </a>
+         <a href="{{ url('/client/stocks') }}" class="{{ request()->routeIs('client.stocks') ? 'active' : '' }}">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+             <circle cx="12" cy="7" r="4"/>
+           </svg>
+           <span>Stocks</span>
+         </a>
+         <a href="{{ url('/client/rentabilite') }}" class="{{ request()->routeIs('client.rentabilite') ? 'active' : '' }}">
+           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+             <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+             <path d="M12 7v10"/>
+             <path d="M9.5 9.5c.6-1 4.4-1 5 0"/>
+             <path d="M9.5 14.5c.6 1 4.4 1 5 0"/>
+           </svg>
+           <span>Rentabilité</span>
+         </a>
       </nav>
 
       <!-- Partie Droite : Actions -->
@@ -573,14 +573,14 @@
       overlay.id = 'mobileNavOverlay';
       document.body.appendChild(overlay);
 
-      const links = [
-        { href: '{{ url('/client/dashboard') }}', label: 'Dashboard', active: {{ request()->routeIs('client.dashboard') ? 'true' : 'false' }} },
-        { href: '{{ url('/client/parcelles') }}', label: 'Parcelles', active: {{ request()->routeIs('client.parcelles') ? 'true' : 'false' }} },
-        { href: '{{ url('/client/rentabilite') }}', label: 'Rentabilité', active: {{ request()->routeIs('client.rentabilite') ? 'true' : 'false' }} },
-        { href: '{{ url('/client/stocks') }}', label: 'Stocks', active: {{ request()->routeIs('client.stocks') ? 'true' : 'false' }} },
-        { href: '{{ url('/client/notifications') }}', label: 'Notifications', active: {{ request()->routeIs('client.notifications') ? 'true' : 'false' }} },
-        { href: '{{ url('/client/mon-compte') }}', label: 'Mon compte', active: {{ request()->routeIs('client.compte') ? 'true' : 'false' }} }
-      ];
+       const links = [
+         { href: '{{ url('/client/dashboard') }}', label: 'Dashboard', active: {{ request()->routeIs('client.dashboard') ? 'true' : 'false' }} },
+         { href: '{{ url('/client/parcelles') }}', label: 'Parcelles', active: {{ request()->routeIs('client.parcelles') ? 'true' : 'false' }} },
+         { href: '{{ url('/client/stocks') }}', label: 'Stocks', active: {{ request()->routeIs('client.stocks') ? 'true' : 'false' }} },
+         { href: '{{ url('/client/rentabilite') }}', label: 'Rentabilité', active: {{ request()->routeIs('client.rentabilite') ? 'true' : 'false' }} },
+         { href: '{{ url('/client/notifications') }}', label: 'Notifications', active: {{ request()->routeIs('client.notifications') ? 'true' : 'false' }} },
+         { href: '{{ url('/client/mon-compte') }}', label: 'Mon compte', active: {{ request()->routeIs('client.compte') ? 'true' : 'false' }} }
+       ];
 
       mobileNavLinks.innerHTML = links.map(link => 
         `<a href="${link.href}" class="mobile-nav-link ${link.active ? 'active' : ''}">
