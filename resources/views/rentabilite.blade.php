@@ -1789,70 +1789,40 @@ if (profitElement) {
                   <canvas id="costsDonutChart"></canvas>
                 </div>
                 <div class="costs-legend--premium">
-                  <div class="costs-legend-item--premium">
-                    <span class="costs-legend-dot--premium" style="background: #10b981;"></span>
-                    <span class="costs-legend-label">Engrais</span>
-                    <span class="costs-legend-value">{{ number_format($coutsEngrais, 0, ',', ' ') }} FCFA</span>
-                  </div>
-                  <div class="costs-legend-item--premium">
-                    <span class="costs-legend-dot--premium" style="background: #6b7280;"></span>
-                    <span class="costs-legend-label">Semences</span>
-                    <span class="costs-legend-value">{{ number_format($coutsSemences, 0, ',', ' ') }} FCFA</span>
-                  </div>
-                  <div class="costs-legend-item--premium">
-                    <span class="costs-legend-dot--premium" style="background: #f59e0b;"></span>
-                    <span class="costs-legend-label">Herbicides</span>
-                    <span class="costs-legend-value">{{ number_format($coutsHerbicides, 0, ',', ' ') }} FCFA</span>
-                  </div>
-                  <div class="costs-legend-item--premium">
-                    <span class="costs-legend-dot--premium" style="background: #475569;"></span>
-                    <span class="costs-legend-label">Main-d'œuvre</span>
-                    <span class="costs-legend-value">{{ number_format($coutsMainOeuvre, 0, ',', ' ') }} FCFA</span>
-                  </div>
-                  <div class="costs-legend-item--premium">
-                    <span class="costs-legend-dot--premium" style="background: #94a3b8;"></span>
-                    <span class="costs-legend-label">Transport</span>
-                    <span class="costs-legend-value">{{ number_format($coutsTransport, 0, ',', ' ') }} FCFA</span>
-                  </div>
-                  <div class="costs-legend-item--premium">
-                    <span class="costs-legend-dot--premium" style="background: #0f172a;"></span>
-                    <span class="costs-legend-label">Autres coûts</span>
-                    <span class="costs-legend-value">{{ number_format($coutsAutres, 0, ',', ' ') }} FCFA</span>
-                  </div>
+                <div class="costs-legend-item--premium">
+                  <span class="costs-legend-dot--premium" style="background: #10b981;"></span>
+                  <span class="costs-legend-label">Engrais</span>
+                  <span class="costs-legend-value">{{ number_format($coutsEngrais, 0, ',', ' ') }} FCFA</span>
+                </div>
+                <div class="costs-legend-item--premium">
+                  <span class="costs-legend-dot--premium" style="background: #6b7280;"></span>
+                  <span class="costs-legend-label">Semences</span>
+                  <span class="costs-legend-value">{{ number_format($coutsSemences, 0, ',', ' ') }} FCFA</span>
+                </div>
+                <div class="costs-legend-item--premium">
+                  <span class="costs-legend-dot--premium" style="background: #f59e0b;"></span>
+                  <span class="costs-legend-label">Herbicides</span>
+                  <span class="costs-legend-value">{{ number_format($coutsHerbicides, 0, ',', ' ') }} FCFA</span>
                 </div>
               </div>
-              <div class="costs-grid">
-                <div class="cost-item">
-                  <span class="cost-label"><i class="fas fa-seedling"></i> Engrais</span>
-                  <span class="cost-value">{{ number_format($coutsEngrais, 0, ',', ' ') }} FCFA</span>
-                  <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCouts > 0 ? ($coutsEngrais / $totalCouts * 100) : 0 }}%"></div></div>
-                </div>
-                <div class="cost-item">
-                  <span class="cost-label"><i class="fas fa-leaf"></i> Semences</span>
-                  <span class="cost-value">{{ number_format($coutsSemences, 0, ',', ' ') }} FCFA</span>
-                  <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCouts > 0 ? ($coutsSemences / $totalCouts * 100) : 0 }}%"></div></div>
-                </div>
-                <div class="cost-item">
-                  <span class="cost-label"><i class="fas fa-spray-can"></i> Herbicides</span>
-                  <span class="cost-value">{{ number_format($coutsHerbicides, 0, ',', ' ') }} FCFA</span>
-                  <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCouts > 0 ? ($coutsHerbicides / $totalCouts * 100) : 0 }}%"></div></div>
-                </div>
-                <div class="cost-item">
-                  <span class="cost-label"><i class="fas fa-users"></i> Main-d'œuvre</span>
-                  <span class="cost-value">{{ number_format($coutsMainOeuvre, 0, ',', ' ') }} FCFA</span>
-                  <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCouts > 0 ? ($coutsMainOeuvre / $totalCouts * 100) : 0 }}%"></div></div>
-                </div>
-                <div class="cost-item">
-                  <span class="cost-label"><i class="fas fa-truck"></i> Transport</span>
-                  <span class="cost-value">{{ number_format($coutsTransport, 0, ',', ' ') }} FCFA</span>
-                  <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCouts > 0 ? ($coutsTransport / $totalCouts * 100) : 0 }}%"></div></div>
-                </div>
-                <div class="cost-item">
-                  <span class="cost-label"><i class="fas fa-ellipsis-h"></i> Autres coûts</span>
-                  <span class="cost-value">{{ number_format($coutsAutres, 0, ',', ' ') }} FCFA</span>
-                  <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCouts > 0 ? ($coutsAutres / $totalCouts * 100) : 0 }}%"></div></div>
-                </div>
+            </div>
+            <div class="costs-grid">
+              <div class="cost-item">
+                <span class="cost-label"><i class="fas fa-seedling"></i> Engrais</span>
+                <span class="cost-value">{{ number_format($coutsEngrais, 0, ',', ' ') }} FCFA</span>
+                <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCoutsIntrants > 0 ? ($coutsEngrais / $totalCoutsIntrants * 100) : 0 }}%"></div></div>
               </div>
+              <div class="cost-item">
+                <span class="cost-label"><i class="fas fa-leaf"></i> Semences</span>
+                <span class="cost-value">{{ number_format($coutsSemences, 0, ',', ' ') }} FCFA</span>
+                <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCoutsIntrants > 0 ? ($coutsSemences / $totalCoutsIntrants * 100) : 0 }}%"></div></div>
+              </div>
+              <div class="cost-item">
+                <span class="cost-label"><i class="fas fa-spray-can"></i> Herbicides</span>
+                <span class="cost-value">{{ number_format($coutsHerbicides, 0, ',', ' ') }} FCFA</span>
+                <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCoutsIntrants > 0 ? ($coutsHerbicides / $totalCoutsIntrants * 100) : 0 }}%"></div></div>
+              </div>
+            </div>
             </div>
           </section>
 
@@ -2094,10 +2064,7 @@ if (profitElement) {
         costs: {
           engrais: {{ $coutsEngrais }},
           semences: {{ $coutsSemences }},
-          herbicides: {{ $coutsHerbicides }},
-          mainOeuvre: {{ $coutsMainOeuvre }},
-          transport: {{ $coutsTransport }},
-          autres: {{ $coutsAutres }}
+          herbicides: {{ $coutsHerbicides }}
         },
         topCultures: @json($topCultures),
         cultureYields: @json($cultureYields),
@@ -2429,10 +2396,10 @@ if (profitElement) {
           new Chart(ctx, {
             type: 'doughnut',
             data: {
-              labels: ['Engrais', 'Semences', 'Herbicides', 'Main-d\'œuvre', 'Transport', 'Autres'],
+              labels: ['Engrais', 'Semences', 'Herbicides'],
               datasets: [{
-                data: [{{ $coutsEngrais }}, {{ $coutsSemences }}, {{ $coutsHerbicides }}, {{ $coutsMainOeuvre }}, {{ $coutsTransport }}, {{ $coutsAutres }}],
-                backgroundColor: ['#10b981', '#6b7280', '#f59e0b', '#475569', '#94a3b8', '#0f172a'],
+                data: [{{ $coutsEngrais }}, {{ $coutsSemences }}, {{ $coutsHerbicides }}],
+                backgroundColor: ['#10b981', '#6b7280', '#f59e0b'],
                 borderWidth: 3,
                 borderColor: '#fff',
                 hoverOffset: 8

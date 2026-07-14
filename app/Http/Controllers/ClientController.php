@@ -360,19 +360,11 @@ class ClientController extends Controller
             ->join('stocks', 'intrant_consommes.stock_id', '=', 'stocks.id')
             ->where('stocks.type', 'Semence')
             ->sum(\DB::raw('quantite_consommee * cout_unitaire')) ?? 0;
-        $coutsMainOeuvre = IntrantConsomme::where('intrant_consommes.user_id', $user->id)
-            ->join('stocks', 'intrant_consommes.stock_id', '=', 'stocks.id')
-            ->where('stocks.type', 'like', '%main%')
-            ->sum(\DB::raw('quantite_consommee * cout_unitaire')) ?? 0;
-        $coutsTransport = IntrantConsomme::where('intrant_consommes.user_id', $user->id)
-            ->join('stocks', 'intrant_consommes.stock_id', '=', 'stocks.id')
-            ->where('stocks.type', 'like', '%transport%')
-            ->sum(\DB::raw('quantite_consommee * cout_unitaire')) ?? 0;
         $coutsHerbicides = IntrantConsomme::where('intrant_consommes.user_id', $user->id)
             ->join('stocks', 'intrant_consommes.stock_id', '=', 'stocks.id')
             ->where('stocks.type', 'like', '%herbicide%')
             ->sum(\DB::raw('quantite_consommee * cout_unitaire')) ?? 0;
-        $coutsAutres = max(0, $totalCouts - ($coutsEngrais + $coutsSemences + $coutsMainOeuvre + $coutsTransport + $coutsHerbicides));
+        $totalCoutsIntrants = $coutsEngrais + $coutsSemences + $coutsHerbicides;
         
         // Top 3 cultures les plus rentables
         $topCultures = Recolte::where('user_id', $user->id)
@@ -440,9 +432,7 @@ class ClientController extends Controller
             'coutsEngrais',
             'coutsSemences',
             'coutsHerbicides',
-            'coutsMainOeuvre',
-            'coutsTransport',
-            'coutsAutres',
+            'totalCoutsIntrants',
             'topCultures',
             'cultureYields',
             'badgePerformance',
