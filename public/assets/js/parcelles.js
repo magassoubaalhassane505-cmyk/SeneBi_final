@@ -20,7 +20,7 @@
     return new Date(d).toLocaleDateString("fr-FR");
   }
 
-    function renderParcelsList(uiParcels, list) {
+  function renderParcelsList(uiParcels, list) {
     const badgeClass = (st) => (st === "En culture" ? "green" : st === "Récoltée" ? "blue" : "yellow");
 
     if (!uiParcels.length) {
@@ -138,147 +138,7 @@
                   <div class="v yield">
                     <span>${hasHarvest ? fmtKgPerHa(yieldKgHa) : "—"}</span>
                     ${hasHarvest ? `<span class="yield-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>` : ""}
-                    ${hasHarvest && p.performance ? `<span class="performance-indicator" title="+${p.performance}% par rapport à la saison dernière" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14l5-5 5 5"/></svg></span>` : ""}
-                  </div>
-                </div>
-
-                ${mapBtn || photosHtml ? `<div class="kv" style="grid-column:span 2;">${mapBtn}${photosHtml}</div>` : ''}
-              </div>
-            </div>
-
-            <aside class="parcel-journal" aria-label="Journal d'activites">
-              <div class="parcel-journal-title">
-                <i class="fas fa-stream" style="margin-right:6px;"></i>Journal d'activites
-              </div>
-              <ul class="parcel-journal-list">
-                ${journalTimelineHtml}
-              </ul>
-            </aside>
-
-            ${p.status !== "En jachère" ? `
-            <div class="parcel-actions">
-              <button class="apply-intrant-btn" onclick="window.location.href='/client/stocks'">
-                <i class="fas fa-syringe" style="margin-right:6px;"></i>Appliquer Intrant
-              </button>
-              <button class="edit-parcel-btn" data-id="${p.id}" data-name="${p.name}" title="Modifier la parcelle" style="background:none;border:none;cursor:pointer;opacity:0.7;font-size:12px;padding:4px 6px;color:#374151;">
-                <i class="fas fa-pen"></i>
-              </button>
-              <button class="delete-parcel-btn" data-id="${p.id}" data-name="${p.name}" title="Supprimer la parcelle" style="background:none;border:none;cursor:pointer;opacity:0.7;font-size:12px;padding:4px 6px;color:#ef4444;">
-                <i class="fas fa-trash"></i>
-              </button>
-            </div>
-            ` : ''}
-          </article>
-        `;
-      })
-      .join(");
-
-    const parcelSelect = SeneBI.qs("#parcelle-recoltee");
-    if (parcelSelect) {
-      parcelSelect.innerHTML = `<option value="">Sélectionner une parcelle</option>` + uiParcels.map((p) => `<option value="${p.id}">${p.name}</option>`).join("");
-    }
-  }
-
-    list.innerHTML = uiParcels
-      .map((p) => {
-        const hasHarvest = p.lastHarvestQty && Number(p.lastHarvestQty || 0) > 0;
-        const yieldKgHa = hasHarvest ? Number(p.lastHarvestQty) / Number(p.areaHa || 1) : null;
-        const dateFr = p.lastHarvestDate ? new Date(p.lastHarvestDate).toLocaleDateString("fr-FR") : null;
-        const journal = Array.isArray(p.journal) ? p.journal : [];
-
-        const photosHtml = p.photos && p.photos.length > 0
-          ? `<div class="parcel-photos-gallery" style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
-              ${p.photos.slice(0, 3).map(photo => `<img src="/storage/${photo.photo_path}" alt="${photo.legende || ''}" style="width:50px;height:50px;border-radius:6px;object-fit:cover;border:1px solid #e5e7eb;">`).join('')}
-              ${p.photos.length > 3 ? `<div style="width:50px;height:50px;border-radius:6px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;font-size:11px;color:#6b7280;">+${p.photos.length - 3}</div>` : ''}
-            </div>`
-          : '';
-
-        const mapBtn = p.latitude && p.longitude
-          ? `<button class="btn-map" onclick="openMapModal(${p.latitude}, ${p.longitude}, '${p.name}')" style="background:none;border:1px solid #e5e7eb;border-radius:6px;padding:4px 8px;font-size:11px;color:#3b82f6;cursor:pointer;margin-right:8px;">
-              <i class="fas fa-map-marker-alt"></i> Voir sur la carte
-            </button>`
-          : '';
-
-        const journalTimelineHtml = journal.length
-          ? journal.map((j) => {
-              const typeColors = {
-                semis: '#059669',
-                intrant: '#2563eb',
-                visite: '#0891b2',
-                traitement: '#ea580c',
-                recolte: '#16a34a'
-              };
-              const typeIcons = {
-                semis: 'fa-seedling',
-                intrant: 'fa-flask',
-                visite: 'fa-clipboard-check',
-                traitement: 'fa-spray-can',
-                recolte: 'fa-boxes-stacked'
-              };
-              const color = typeColors[j.type] || '#64748b';
-              const icon = typeIcons[j.type] || 'fa-circle';
-              const dateFormatted = j.date ? new Date(j.date).toLocaleDateString("fr-FR") : '';
-              return `
-                <li class="parcel-journal-item">
-                  <div class="journal-timeline">
-                    <div class="journal-dot" style="background:${color};box-shadow:0 0 0 3px ${color}22;"></div>
-                    <div class="journal-line"></div>
-                  </div>
-                  <div class="journal-content">
-                    <div class="journal-header">
-                      <span class="journal-label"><i class="fas ${icon}" style="color:${color};margin-right:4px;"></i>${j.label}</span>
-                      <span class="journal-date">${dateFormatted}</span>
-                    </div>
-                    <div class="journal-value">${j.value}</div>
-                  </div>
-                </li>
-              `;
-            }).join("")
-          : '<li class="parcel-journal-item"><div class="journal-content"><span class="journal-label">Aucune activité</span><span class="journal-value">—</span></div></li>';
-
-        return `
-          <article class="parcel-card ${p.status === "En jachère" ? 'fallow-card' : ''}">
-            <div class="parcel-head">
-              <div class="parcel-name">${p.name}</div>
-              ${p.performance && p.performanceClass ? `<span class="${p.performanceClass}">${p.performance}</span>` : ''}
-              <span class="badge ${badgeClass(p.status)}">${p.status}</span>
-            </div>
-
-            <div class="parcel-growth">
-              <div class="growth-bar">
-                <div class="growth-fill" style="width: ${p.growth}%"></div>
-              </div>
-              <span class="growth-text">${p.growth}%</span>
-              ${p.plantingDate ? `<span class="planting-date"><i class="fas fa-leaf" style="margin-right:4px;color:#059669;"></i>Semé le ${p.plantingDate}</span>` : ''}
-            </div>
-
-            <div class="parcel-body">
-              <div class="parcel-grid">
-                <div class="kv">
-                  <div class="k">Culture</div>
-                  <div class="v">
-                    ${p.culture}
-                    ${p.status === "En culture" && p.plantingDate ? `<div class="planting-date">Semé le : ${p.plantingDate}</div>` : ""}
-                    ${p.status === "En jachère" && p.lastActivity ? `<div class="planting-date">Dernière activité : ${p.lastActivity}</div>` : ""}
-                  </div>
-                </div>
-                <div class="kv"><div class="k">Surface</div><div class="v">${fmtHectaresWord(p.areaHa)}</div></div>
-                <div class="kv"><div class="k">Dernière récolte</div><div class="v">${dateFr || "—"}</div></div>
-
-                <div class="kv"><div class="k">Quantité</div><div class="v">${hasHarvest ? fmtKg(p.lastHarvestQty) : "—"}</div></div>
-                <div class="kv"><div class="k">Récoltes</div><div class="v">${p.recoltesCount || 0}</div></div>
-                <div class="kv"><div class="k">Intrants</div><div class="v">${p.intrantsCount || 0}</div></div>
-                <div class="kv"><div class="k">Visites</div><div class="v">${p.visitesCount || 0}</div></div>
-                <div class="kv"><div class="k">Durée culture</div><div class="v">${p.cultureDuration ? p.cultureDuration + ' j' : '—'}</div></div>
-
-                <div class="kv"><div class="k">Production estimée</div><div class="v">${fmtKg(p.productionEstimee || 0)}</div></div>
-                <div class="kv"><div class="k">Coût investi</div><div class="v">${fmtCost(p.cost)}</div></div>
-                <div class="kv">
-                  <div class="k">Rendement</div>
-                  <div class="v yield">
-                    <span>${hasHarvest ? fmtKgPerHa(yieldKgHa) : "—"}</span>
-                    ${hasHarvest ? `<span class="yield-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>` : ""}
-                    ${hasHarvest && p.performance ? `<span class="performance-indicator" title="+${p.performance}% par rapport à la saison dernière" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14l5-5 5 5"/></svg></span>` : ""}
+                    ${hasHarvest && p.performance ? `<span class="performance-indicator" title="+${p.performance}% par rapport à la saison dernière" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14l5-5 5 5"/></svg></span>` : ""}
                   </div>
                 </div>
 
