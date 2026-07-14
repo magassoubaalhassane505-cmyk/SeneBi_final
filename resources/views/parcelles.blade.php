@@ -10,14 +10,15 @@
   <link rel="stylesheet" href="{{ asset('assets/css/visual-harmony.css') }}" />
   <link rel="stylesheet" href="{{ asset('assets/css/region-filter.css') }}" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body data-page="parcels">
     <div class="app">
      @include('header-client')  
 
       <main class="container">
-        <div class="page-hero senebi-page-transition">
-          <div>
+        <div class="page-hero senebi-page-transition flex flex-row items-center justify-between w-full gap-4">
+          <div class="flex-1">
             <h1 class="hero-title">Gestion des Parcelles & Récoltes</h1>
             <p class="hero-subtitle">Suivi de la production et des rendements</p>
             <p class="weather-advice" id="weatherAdvice">
@@ -27,7 +28,7 @@
               <span>Conseil du jour : C'est le moment idéal pour l'arrosage de la Parcelle Nord.</span>
             </p>
           </div>
-          <div class="hero-actions">
+          <div class="flex flex-row items-center gap-4">
             <div class="region-selector">
               <label for="regionSelectParcel" class="region-label">Région</label>
               <select id="regionSelectParcel" class="region-dropdown">
