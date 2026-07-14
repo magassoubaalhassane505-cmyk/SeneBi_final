@@ -9,7 +9,6 @@ use App\Models\Intrant;
 use App\Models\IntrantConsomme;
 use App\Models\Visite;
 use App\Models\Objectif;
-use App\Models\PdfExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -399,17 +398,6 @@ class ClientController extends Controller
         // Badge de performance automatique
         $badgePerformance = $this->calculatePerformanceBadge($totalCA, $totalBenefice, $margeMoyenne);
         
-        // Historique des exports PDF
-        $pdfHistory = PdfExport::where('user_id', $user->id)
-            ->orderByDesc('created_at')
-            ->limit(10)
-            ->get()
-            ->map(fn($p) => [
-                'date' => $p->created_at->format('d/m/Y H:i'),
-                'type' => ucfirst($p->type),
-                'file_path' => $p->file_path,
-            ]);
-        
         return view('rentabilite', compact(
             'recoltes',
             'totalCA',
@@ -435,8 +423,7 @@ class ClientController extends Controller
             'totalCoutsIntrants',
             'topCultures',
             'cultureYields',
-            'badgePerformance',
-            'pdfHistory'
+            'badgePerformance'
         ));
     }
     

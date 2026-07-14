@@ -1907,47 +1907,6 @@ if (profitElement) {
           </div>
         </section>
 
-        <!-- ============================================
-             SECTION 7: HISTORIQUE EXPORTS PDF
-             ============================================ -->
-        <section class="pdf-history-section">
-          <div class="card-header--premium">
-            <div class="icon-box" aria-hidden="true"><i class="fas fa-history"></i></div>
-            <h3 class="section-title--premium">Historique des Exports PDF</h3>
-          </div>
-          @if($pdfHistory->count() > 0)
-            <div class="pdf-table-wrap">
-              <table class="pdf-history-table--premium">
-                <thead>
-                  <tr>
-                    <th>Date d'export</th>
-                    <th>Type de rapport</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody id="pdfHistoryTable">
-                  @foreach($pdfHistory as $pdf)
-                    <tr>
-                      <td>{{ $pdf['date'] }}</td>
-                      <td>{{ $pdf['type'] }}</td>
-                      <td>
-                        <button class="btn small re-download-btn" data-file="{{ $pdf['file_path'] }}">
-                          <i class="fas fa-download"></i> Retélécharger
-                        </button>
-                      </td>
-                    </tr>
-                  @endforeach
-                </tbody>
-              </table>
-            </div>
-          @else
-            <div class="empty-state--premium">
-              <i class="fas fa-file-pdf"></i>
-              <p>Aucun export PDF pour le moment. Générez votre premier rapport ci-dessous.</p>
-            </div>
-          @endif
-        </section>
-
         <section class="charts-grid">
           <article class="card">
             <div class="card-header">
@@ -2069,7 +2028,6 @@ if (profitElement) {
         topCultures: @json($topCultures),
         cultureYields: @json($cultureYields),
         parcellesData: @json($parcellesData),
-        pdfHistory: @json($pdfHistory),
         business: {
           salesFcfa: {{ $totalCA }},
           intrantsCostFcfa: {{ $totalCouts }},
