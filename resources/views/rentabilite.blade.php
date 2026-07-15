@@ -1774,61 +1774,7 @@ if (profitElement) {
             </article>
           </div>
         </section>
-        
-<!-- ============================================
-               SECTION 2: RÉPARTITION DES COÛTS
-               ============================================ -->
-          <section class="costs-section">
-            <div class="card-header--premium">
-              <div class="icon-box" aria-hidden="true"><i class="fas fa-pie-chart"></i></div>
-              <h3 class="section-title--premium">Répartition des Coûts</h3>
-            </div>
-            <div class="costs-content--premium">
-              <div class="costs-chart-wrapper--premium">
-                <div class="costs-chart-container">
-                  <canvas id="costsDonutChart"></canvas>
-                </div>
-                <div class="costs-legend--premium">
-                <div class="costs-legend-item--premium">
-                  <span class="costs-legend-dot--premium" style="background: #10b981;"></span>
-                  <span class="costs-legend-label">Engrais</span>
-                  <span class="costs-legend-value">{{ number_format($coutsEngrais, 0, ',', ' ') }} FCFA</span>
-                </div>
-                <div class="costs-legend-item--premium">
-                  <span class="costs-legend-dot--premium" style="background: #6b7280;"></span>
-                  <span class="costs-legend-label">Semences</span>
-                  <span class="costs-legend-value">{{ number_format($coutsSemences, 0, ',', ' ') }} FCFA</span>
-                </div>
-                <div class="costs-legend-item--premium">
-                  <span class="costs-legend-dot--premium" style="background: #f59e0b;"></span>
-                  <span class="costs-legend-label">Herbicides</span>
-                  <span class="costs-legend-value">{{ number_format($coutsHerbicides, 0, ',', ' ') }} FCFA</span>
-                </div>
-              </div>
-            </div>
-            <div class="costs-grid">
-              <div class="cost-item">
-                <span class="cost-label"><i class="fas fa-seedling"></i> Engrais</span>
-                <span class="cost-value">{{ number_format($coutsEngrais, 0, ',', ' ') }} FCFA</span>
-                <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCoutsIntrants > 0 ? ($coutsEngrais / $totalCoutsIntrants * 100) : 0 }}%"></div></div>
-              </div>
-              <div class="cost-item">
-                <span class="cost-label"><i class="fas fa-leaf"></i> Semences</span>
-                <span class="cost-value">{{ number_format($coutsSemences, 0, ',', ' ') }} FCFA</span>
-                <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCoutsIntrants > 0 ? ($coutsSemences / $totalCoutsIntrants * 100) : 0 }}%"></div></div>
-              </div>
-              <div class="cost-item">
-                <span class="cost-label"><i class="fas fa-spray-can"></i> Herbicides</span>
-                <span class="cost-value">{{ number_format($coutsHerbicides, 0, ',', ' ') }} FCFA</span>
-                <div class="cost-bar"><div class="cost-fill" style="width: {{ $totalCoutsIntrants > 0 ? ($coutsHerbicides / $totalCoutsIntrants * 100) : 0 }}%"></div></div>
-              </div>
-            </div>
-            </div>
-          </section>
 
-<!-- ============================================
-              SECTION 4: BADGE DE PERFORMANCE
-              ============================================ -->
         <section class="performance-badge-section">
           <div class="card-header--premium">
             <div class="icon-box" aria-hidden="true"><i class="fas fa-award"></i></div>
@@ -2019,11 +1965,6 @@ if (profitElement) {
           beneficeEstime: {{ $moyenneMensuelleBenefice }},
           tendance: {{ $tendanceFinanciere }},
           projections: @json($projections)
-        },
-        costs: {
-          engrais: {{ $coutsEngrais }},
-          semences: {{ $coutsSemences }},
-          herbicides: {{ $coutsHerbicides }}
         },
         topCultures: @json($topCultures),
         cultureYields: @json($cultureYields),
@@ -2340,59 +2281,12 @@ if (profitElement) {
         setInterval(generateAIAdvice, 30000);
         
         // Initialiser les graphiques premium
-        initCostsChart();
         initProjectionTimelineChart();
         
         // Générer les recommandations IA financières
         generateFinancialRecommendations();
       });
       
-      // GRAPHIQUE DES COÛTS DONUT
-      function initCostsChart() {
-        const ctx = document.getElementById('costsDonutChart');
-        if (ctx) {
-          new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-              labels: ['Engrais', 'Semences', 'Herbicides'],
-              datasets: [{
-                data: [{{ $coutsEngrais }}, {{ $coutsSemences }}, {{ $coutsHerbicides }}],
-                backgroundColor: ['#10b981', '#6b7280', '#f59e0b'],
-                borderWidth: 3,
-                borderColor: '#fff',
-                hoverOffset: 8
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              cutout: '65%',
-              plugins: {
-                legend: {
-                  display: false
-                },
-                tooltip: {
-                  backgroundColor: 'rgba(15, 23, 42, 0.92)',
-                  padding: 12,
-                  cornerRadius: 10,
-                  callbacks: {
-                    label(ctx) {
-                      const label = ctx.label || '';
-                      const value = ctx.parsed || 0;
-                      return `${label}: ${value.toLocaleString('fr-FR')} FCFA`;
-                    }
-                  }
-                }
-              },
-              animation: {
-                animateScale: true,
-                animateRotate: true
-              }
-            }
-          });
-        }
-      }
-
       // GRAPHIQUE TIMELINE DES PROJECTIONS
       function initProjectionTimelineChart() {
         const ctx = document.getElementById('projectionTimelineChart');

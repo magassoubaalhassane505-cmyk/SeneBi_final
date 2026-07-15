@@ -141,6 +141,7 @@ class ClientApiController extends Controller
             'region' => 'required|string|max:255',
             'surface' => 'required|numeric|min:0.01',
             'culture' => 'required|string|max:255',
+            'planting_date' => 'nullable|date',
             'statut' => 'nullable|string|max:100',
         ]);
 
@@ -149,6 +150,7 @@ class ClientApiController extends Controller
             'region' => $data['region'],
             'surface' => $data['surface'],
             'culture' => $data['culture'],
+            'planting_date' => $data['planting_date'] ?? null,
         ]);
 
         \App\Models\Notification::notifyUser(
@@ -180,6 +182,7 @@ class ClientApiController extends Controller
             'region' => 'sometimes|string|max:255',
             'surface' => 'sometimes|numeric|min:0.01',
             'culture' => 'sometimes|string|max:255',
+            'planting_date' => 'sometimes|nullable|date',
         ]);
 
         $parcelle->update($data);

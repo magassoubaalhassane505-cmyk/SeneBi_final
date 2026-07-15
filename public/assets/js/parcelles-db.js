@@ -131,6 +131,7 @@
           region: document.getElementById("parcelRegion")?.value?.trim(),
           surface: Number(document.getElementById("parcelSurface")?.value),
           culture: document.getElementById("parcelCulture")?.value?.trim(),
+          planting_date: document.getElementById("parcelPlantingDate")?.value || null,
         };
         const res = await fetch(`${cfg.apiBase}/parcelles`, {
           method: "POST",

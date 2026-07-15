@@ -350,21 +350,6 @@ class ClientController extends Controller
             ? (($caAnneeActuelle - $caAnneePrecedente) / $caAnneePrecedente) * 100 
             : 0;
         
-        // Répartition des coûts par type
-        $coutsEngrais = IntrantConsomme::where('intrant_consommes.user_id', $user->id)
-            ->join('stocks', 'intrant_consommes.stock_id', '=', 'stocks.id')
-            ->where('stocks.type', 'Engrais')
-            ->sum(\DB::raw('quantite_consommee * cout_unitaire')) ?? 0;
-        $coutsSemences = IntrantConsomme::where('intrant_consommes.user_id', $user->id)
-            ->join('stocks', 'intrant_consommes.stock_id', '=', 'stocks.id')
-            ->where('stocks.type', 'Semence')
-            ->sum(\DB::raw('quantite_consommee * cout_unitaire')) ?? 0;
-        $coutsHerbicides = IntrantConsomme::where('intrant_consommes.user_id', $user->id)
-            ->join('stocks', 'intrant_consommes.stock_id', '=', 'stocks.id')
-            ->where('stocks.type', 'like', '%herbicide%')
-            ->sum(\DB::raw('quantite_consommee * cout_unitaire')) ?? 0;
-        $totalCoutsIntrants = $coutsEngrais + $coutsSemences + $coutsHerbicides;
-        
         // Top 3 cultures les plus rentables
         $topCultures = Recolte::where('user_id', $user->id)
             ->selectRaw('culture, SUM(benefice_net) as benefice_total, SUM(revenu_total) as chiffre_affaires, AVG(prix_unitaire) as prix_moyen')
@@ -417,10 +402,6 @@ class ClientController extends Controller
             'caAnneeActuelle',
             'caAnneePrecedente',
             'varAnneeCA',
-            'coutsEngrais',
-            'coutsSemences',
-            'coutsHerbicides',
-            'totalCoutsIntrants',
             'topCultures',
             'cultureYields',
             'badgePerformance'

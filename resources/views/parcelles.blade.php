@@ -10,55 +10,58 @@
   <link rel="stylesheet" href="{{ asset('assets/css/visual-harmony.css') }}" />
   <link rel="stylesheet" href="{{ asset('assets/css/region-filter.css') }}" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body data-page="parcels">
     <div class="app">
      @include('header-client')  
 
       <main class="container">
-        <div class="page-hero senebi-page-transition flex flex-row items-center justify-between w-full gap-4">
-          <div class="flex-1">
+        <div class="page-hero senebi-page-transition">
+          <div class="hero-header">
             <h1 class="hero-title">Gestion des Parcelles & Récoltes</h1>
             <p class="hero-subtitle">Suivi de la production et des rendements</p>
-            <p class="weather-advice" id="weatherAdvice">
+          </div>
+
+          <div class="hero-dashboard">
+            <div class="weather-advice" id="weatherAdvice">
               <div class="icon-box-sm icon-box green" style="display: inline-flex; margin-right: 8px; vertical-align: middle;">
                 <i class="fas fa-lightbulb"></i>
               </div>
               <span>Conseil du jour : C'est le moment idéal pour l'arrosage de la Parcelle Nord.</span>
-            </p>
-          </div>
-          <div class="flex flex-row items-center gap-4">
-            <div class="region-selector">
-              <label for="regionSelectParcel" class="region-label">Région</label>
-              <select id="regionSelectParcel" class="region-dropdown">
-                <option value="all">Toutes les régions</option>
-                <option value="bko">Bamako</option>
-                <option value="kay">Kayes</option>
-                <option value="kou">Koulikoro</option>
-                <option value="seg">Ségou</option>
-                <option value="sik">Sikasso</option>
-                <option value="mop">Mopti</option>
-                <option value="tom">Tombouctou</option>
-                <option value="gao">Gao</option>
-                <option value="kid">Kidal</option>
-              </select>
             </div>
 
-            <!-- Widget Météo Dynamique -->
-            <div class="weather-widget" id="weatherWidget">
-              <div class="weather-content">
-                <div class="icon-box-sm icon-box amber" style="margin-right: 8px;">
-                  <i class="fas fa-sun"></i>
-                </div>
-                <span class="weather-text">Météo Bamako : 34°C - Ensoleillé</span>
+            <div class="hero-actions">
+              <div class="region-selector">
+                <label for="regionSelectParcel" class="region-label">Région</label>
+                <select id="regionSelectParcel" class="region-dropdown">
+                  <option value="all">Toutes les régions</option>
+                  <option value="bko">Bamako</option>
+                  <option value="kay">Kayes</option>
+                  <option value="kou">Koulikoro</option>
+                  <option value="seg">Ségou</option>
+                  <option value="sik">Sikasso</option>
+                  <option value="mop">Mopti</option>
+                  <option value="tom">Tombouctou</option>
+                  <option value="gao">Gao</option>
+                  <option value="kid">Kidal</option>
+                </select>
               </div>
+
+              <!-- Widget Météo Dynamique -->
+              <div class="weather-widget" id="weatherWidget">
+                <div class="weather-content">
+                  <div class="icon-box-sm icon-box amber" style="margin-right: 8px;">
+                    <i class="fas fa-sun"></i>
+                  </div>
+                  <span class="weather-text">Météo Bamako : 34°C - Ensoleillé</span>
+                </div>
+              </div>
+
+              <button class="action-btn" id="openHarvestBtn" type="button">
+                <i class="fas fa-calculator" aria-hidden="true"></i>
+                <span>Saisir une récolte</span>
+              </button>
             </div>
-            
-            <button class="action-btn" id="openHarvestBtn" type="button">
-              <i class="fas fa-calculator" aria-hidden="true"></i>
-              <span>Saisir une récolte</span>
-            </button>
           </div>
         </div>
 
@@ -86,6 +89,10 @@
                   <option value="Maïs">Maïs</option>
                   <option value="Coton">Coton</option>
                 </select>
+              </div>
+              <div class="panel-field">
+                <label for="parcelPlantingDate">Date de semis</label>
+                <input id="parcelPlantingDate" type="date" />
               </div>
             </div>
             <div class="panel-actions">

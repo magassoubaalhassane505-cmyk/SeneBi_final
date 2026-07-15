@@ -169,7 +169,7 @@
                 <div class="form-row form-row--3">
                  <div class="field">
                    <label class="field-label" for="reapproQty">Quantité ajoutée (kg)</label>
-                   <input id="reapproQty" type="number" min="0.01" step="1" placeholder="ex: 200" required />
+                    <input id="reapproQty" type="number" min="0.01" step="any" placeholder="ex: 200" required />
                  </div>
                  <div class="field">
                    <label class="field-label" for="reapproSeuil">Seuil critique (kg)</label>

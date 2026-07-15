@@ -104,7 +104,9 @@
 /* Layout pour hero-actions */
 .hero-actions {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
     gap: 16px;
 }
 
