@@ -13,4 +13,3 @@ bootstrap/cache/*
 phpunit.xml
 README.md
 Docker*
-docker
