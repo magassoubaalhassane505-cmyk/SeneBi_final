@@ -19,6 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Confiance aux reverse proxies (Render, Cloudflare, etc.)
+        $middleware->trustProxies(at: '*');
+
         // Enregistrer les middlewares web standard
         $middleware->web(append: [
             EncryptCookies::class,
