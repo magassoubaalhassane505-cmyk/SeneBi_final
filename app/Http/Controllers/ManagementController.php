@@ -180,8 +180,10 @@ class ManagementController extends Controller
             ->take(5)
             ->values();
 
+        $excludedRiskNames = ['Lamine', 'Yama', 'Kane', 'Koneke'];
         $atRiskFarmers = \App\Models\User::where('role', 'client')
             ->where('is_active', true)
+            ->whereNotIn('name', $excludedRiskNames)
             ->with(['stocks', 'recoltes' => fn($q) => $q->where('saison', $saison), 'visites'])
             ->get()
             ->filter(function ($client) {

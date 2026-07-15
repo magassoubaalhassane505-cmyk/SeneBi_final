@@ -114,9 +114,11 @@ class DashboardController extends Controller
             ->values();
 
         // Agriculteurs à risque
+        $excludedRiskNames = ['Lamine', 'Yama', 'Kane', 'Koneke'];
         $atRiskFarmers = User::where('role', 'client')
             ->where('is_active', true)
             ->where('status', 'approved')
+            ->whereNotIn('name', $excludedRiskNames)
             ->with(['stocks', 'recoltes', 'visites'])
             ->get()
             ->filter(function ($client) {
