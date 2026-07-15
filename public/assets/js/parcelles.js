@@ -95,7 +95,6 @@
           <article class="parcel-card ${p.status === "En jachère" ? 'fallow-card' : ''}">
             <div class="parcel-head">
               <div class="parcel-name">${p.name}</div>
-              ${p.performance && p.performanceClass ? `<span class="${p.performanceClass}">${p.performance}</span>` : ''}
               <span class="badge ${badgeClass(p.status)}">${p.status}</span>
             </div>
 
@@ -138,7 +137,6 @@
                   <div class="v yield">
                     <span>${hasHarvest ? fmtKgPerHa(yieldKgHa) : "—"}</span>
                     ${hasHarvest ? `<span class="yield-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>` : ""}
-                    ${hasHarvest && p.performance ? `<span class="performance-indicator" title="+${p.performance}% par rapport à la saison dernière" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14l5-5 5 5"/></svg></span>` : ""}
                   </div>
                 </div>
 
@@ -256,14 +254,14 @@
     }
 
     const uiParcels = [
-      { id: "BKO-N1", name: "Parcelle Bamako Nord-1", culture: "Riz", areaHa: 4.2, status: "En culture", growth: 80, cost: 98000, performance: 12, plantingDate: "10/01/2026" },
-      { id: "BKO-S1", name: "Parcelle Bamako Sud-1", culture: "Maïs", areaHa: 3.5, status: "Récoltée", growth: 100, cost: 78000, performance: 18, plantingDate: "20/11/2025" },
-      { id: "BKO-C1", name: "Parcelle Bamako Centre-1", culture: "Coton", areaHa: 2.8, status: "En culture", growth: 65, cost: 67000, performance: null, plantingDate: "15/02/2026" },
-      { id: "PN", name: "Parcelle Nord", culture: "Riz", areaHa: 5.5, status: "En culture", growth: 75, cost: 125500, performance: null, plantingDate: "12/01/2026" },
-      { id: "PS", name: "Parcelle Sud", culture: "Maïs", areaHa: 3.2, status: "Récoltée", growth: 100, cost: 82000, performance: 15, plantingDate: "15/11/2025" },
-      { id: "PE", name: "Parcelle Est", culture: "Coton", areaHa: 4.0, status: "En culture", growth: 40, cost: 95000, performance: null, plantingDate: "20/02/2026" },
-      { id: "PO", name: "Parcelle Ouest", culture: "Riz", areaHa: 2.8, status: "En jachère", growth: 0, cost: 45000, performance: null, lastActivity: "01/02/2026" },
-      { id: "PC", name: "Parcelle Centre", culture: "Maïs", areaHa: 6.0, status: "En culture", growth: 85, cost: 158000, performance: null, plantingDate: "08/01/2026" },
+      { id: "BKO-N1", name: "Parcelle Bamako Nord-1", culture: "Riz", areaHa: 4.2, status: "En culture", growth: 80, cost: 98000, plantingDate: "10/01/2026" },
+      { id: "BKO-S1", name: "Parcelle Bamako Sud-1", culture: "Maïs", areaHa: 3.5, status: "Récoltée", growth: 100, cost: 78000, plantingDate: "20/11/2025" },
+      { id: "BKO-C1", name: "Parcelle Bamako Centre-1", culture: "Coton", areaHa: 2.8, status: "En culture", growth: 65, cost: 67000, plantingDate: "15/02/2026" },
+      { id: "PN", name: "Parcelle Nord", culture: "Riz", areaHa: 5.5, status: "En culture", growth: 75, cost: 125500, plantingDate: "12/01/2026" },
+      { id: "PS", name: "Parcelle Sud", culture: "Maïs", areaHa: 3.2, status: "Récoltée", growth: 100, cost: 82000, plantingDate: "15/11/2025" },
+      { id: "PE", name: "Parcelle Est", culture: "Coton", areaHa: 4.0, status: "En culture", growth: 40, cost: 95000, plantingDate: "20/02/2026" },
+      { id: "PO", name: "Parcelle Ouest", culture: "Riz", areaHa: 2.8, status: "En jachère", growth: 0, cost: 45000, lastActivity: "01/02/2026" },
+      { id: "PC", name: "Parcelle Centre", culture: "Maïs", areaHa: 6.0, status: "En culture", growth: 85, cost: 158000, plantingDate: "08/01/2026" },
     ];
 
     renderParcelsList(uiParcels, list);

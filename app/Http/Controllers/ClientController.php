@@ -477,20 +477,6 @@ class ClientController extends Controller
 
         if ($visites >= 2) $score += 10;
 
-        if ($score >= 80) {
-            $badge = 'Excellent';
-            $badgeClass = 'perf-badge excellent';
-        } elseif ($score >= 50) {
-            $badge = 'Bon';
-            $badgeClass = 'perf-badge moyen';
-        } elseif ($score >= 30) {
-            $badge = 'Moyen';
-            $badgeClass = 'perf-badge moyen';
-        } else {
-            $badge = 'Critique';
-            $badgeClass = 'perf-badge risque';
-        }
-
         $plantingDate = $p->planting_date;
         $plantingDateFr = null;
         if ($plantingDate) {
@@ -562,8 +548,6 @@ class ClientController extends Controller
             'surface' => $surface,
             'rendement' => round($rendement, 2),
             'benefice' => round($benefice, 0),
-            'badge' => $badge,
-            'badgeClass' => $badgeClass,
             'recoltesCount' => $recoltesCount,
             'intrantsCount' => $intrantsCount,
             'visitesCount' => $visites,

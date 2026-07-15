@@ -24,8 +24,6 @@
         status: s.status || "En culture",
         growth: s.growth ?? 0,
         cost: s.cost || 0,
-        performance: s.badge || null,
-        performanceClass: s.badgeClass || null,
         plantingDate: s.plantingDate || null,
         region: p.region,
         rendement: s.rendement || 0,
